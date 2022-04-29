@@ -29,18 +29,23 @@ namespace SyncFormsApp
 
 
         }
-       
+
         private void BtnExe_Click(object sender, EventArgs e)
         {
-            DellModelCell dmc = new DellModelCell();
             string filePaths = TxtDellMultiPath.Text.Trim();
-            string[] tokens = filePaths.Split(';');
+            DellModelCell dmc = new DellModelCell();
+            List<List<DellModelCell>> rowList = dmc.CopySheetsToRowList(filePaths);
 
-            foreach (string st in tokens)
+
+            if (rowList.Count > 0)
             {
-                dmc.CopySheetsToList(st);
+                dmc.RowListToExcel(rowList);
+                MessageBox.Show("Merge OK!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            
+            else
+                MessageBox.Show("Merge Fail!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+
         }
 
         private void BtnBrowseRMS_Click(object sender, EventArgs e)
