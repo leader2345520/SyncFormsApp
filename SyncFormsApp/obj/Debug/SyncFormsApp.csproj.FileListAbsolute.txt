@@ -1,7 +1,6 @@
 D:\SyncFormsApp\SyncFormsApp\bin\Debug\SyncFormsApp.exe.config
 D:\SyncFormsApp\SyncFormsApp\bin\Debug\SyncFormsApp.exe
 D:\SyncFormsApp\SyncFormsApp\bin\Debug\SyncFormsApp.pdb
-D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.csproj.AssemblyReference.cache
 D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.Form1.resources
 D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.Properties.Resources.resources
 D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.csproj.GenerateResource.cache
@@ -44,3 +43,8 @@ D:\SyncFormsApp\SyncFormsApp\bin\Debug\System.Text.Encodings.Web.xml
 D:\SyncFormsApp\SyncFormsApp\bin\Debug\System.Text.Json.xml
 D:\SyncFormsApp\SyncFormsApp\bin\Debug\System.Threading.Tasks.Extensions.xml
 D:\SyncFormsApp\SyncFormsApp\bin\Debug\System.ValueTuple.xml
+D:\SyncFormsApp\SyncFormsApp\bin\Debug\SyncFormsApp.exe.manifest
+D:\SyncFormsApp\SyncFormsApp\bin\Debug\SyncFormsApp.application
+D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.exe.manifest
+D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.application
+D:\SyncFormsApp\SyncFormsApp\obj\Debug\SyncFormsApp.csproj.AssemblyReference.cache
