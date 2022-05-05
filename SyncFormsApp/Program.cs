@@ -603,7 +603,6 @@ namespace SyncFormsApp
                     //ISheet => sheet
                     ISheet sheet = workbook.GetSheet("Add Part");
 
-
                     if (sheet != null)
                     {
                         //LastRowNum => total count
@@ -612,6 +611,9 @@ namespace SyncFormsApp
                         {
                             // IRow => cursor
                             IRow curRow = sheet.GetRow(i);
+
+                            //by pass 空白行
+                            if (isRowEmpty(curRow)) break;
 
                             cellList = new List<DellCellModel>();
 
@@ -753,6 +755,18 @@ namespace SyncFormsApp
 
 
             return "OK";
+        }
+        public bool isRowEmpty(IRow row)
+        {
+            for (int i = 0; i < row.LastCellNum; i++)
+            {
+                ICell icell = row.GetCell(i);
+                if (icell != null && icell.CellType != CellType.Blank)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
     }
