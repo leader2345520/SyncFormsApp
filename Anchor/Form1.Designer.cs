@@ -1,5 +1,5 @@
 ﻿
-namespace SyncFormsApp
+namespace Anchor
 {
     partial class Form1
     {
@@ -252,7 +252,7 @@ namespace SyncFormsApp
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Excel Sync Tool";
+            this.Text = "Anchor";
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();

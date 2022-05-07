@@ -1,9 +1,9 @@
-﻿
+﻿	
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32413.511
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncFormsApp", "SyncFormsApp\SyncFormsApp.csproj", "{69760D95-6E47-417D-85F5-9134B738B19F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anchor", "Anchor\Anchor.csproj", "{69760D95-6E47-417D-85F5-9134B738B19F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +15,7 @@ using System.Windows.Forms;
 using static NPOI.HSSF.Util.HSSFColor;
 using BorderStyle = NPOI.SS.UserModel.BorderStyle;
 
-namespace SyncFormsApp
+namespace Anchor
 {
     static class Program
     {
@@ -27,6 +28,31 @@ namespace SyncFormsApp
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+        }
+
+        internal static string GetValueFromCell(ICell icell)
+        {
+            string output = "";
+            if (icell != null)
+            {
+                switch (icell.CellType)
+                {
+                    case CellType.String:
+                        output = icell.StringCellValue.Trim();
+                        break;
+                    case CellType.Numeric:
+                        output = icell.NumericCellValue.ToString();
+                        break;
+                    case CellType.Boolean:
+                        output = icell.BooleanCellValue.ToString();
+                        break;
+                    default:
+                        output = "";
+                        break;
+                }
+            }
+            return output;
+            throw new NotImplementedException();
         }
     }
 
@@ -202,17 +228,18 @@ namespace SyncFormsApp
         }
 
 
-        public DataTable DellExcelToDataTable(string filePath)
+        public DataTable DellExcelToDataTable(string filePath, object sheetPage, int copyFormatRow)
         {
             DataTable dt = new DataTable();
             bool isFirst = true;
-            int copyFormatRow = 5;  //Head
+            
 
-            try
+
+            //IWorkbook => excel file
+            IWorkbook workbook = null;
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                //IWorkbook => excel file
-                IWorkbook workbook = null;
-                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
 
                 if (filePath.IndexOf(".xlsx") > 0)
                     workbook = new XSSFWorkbook(fs);
@@ -220,8 +247,15 @@ namespace SyncFormsApp
                 else if (filePath.IndexOf(".xls") > 0)
                     workbook = new HSSFWorkbook(fs);
 
+                ISheet sheet = null;
+
                 //ISheet => sheet
-                ISheet sheet = workbook.GetSheet("Add Part");
+                if (sheetPage is int)
+                {
+                    sheet = workbook.GetSheetAt((int)sheetPage);
+                    copyFormatRow = 1;
+                }
+                else sheet = workbook.GetSheet((string)sheetPage);
 
                 if (sheet != null)
                 {
@@ -235,26 +269,25 @@ namespace SyncFormsApp
 
                         for (int j = 0; j < curRow.LastCellNum; j++)
                         {
+
                             ICell icell = curRow.GetCell(j);
-                            icell.SetCellType(CellType.String);
-                            var cellValue = icell.StringCellValue.Trim();
+                            string cellValue = Program.GetValueFromCell(icell);
+
 
                             if (isFirst)
                                 dt.Columns.Add(cellValue);
                             else
                                 dr[j] = cellValue;
+
                         }
 
-                        if (!isFirst) dt.Rows.Add(dr);
+                        if (!isFirst)
+                            dt.Rows.Add(dr);
+
                         isFirst = false;
 
                     }
                 }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-                MessageBox.Show(exception.Message, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return dt;
@@ -361,7 +394,7 @@ namespace SyncFormsApp
                 return new Dictionary<string, object> { { "msg", excption.Message }, { "returnObject", rmsColorList } };
             }
         }
-        public string ColorListToExcel(List<DellModel> colorList)
+        public string ColorListToExcel(List<DellModel> colorList, string saveFilePath)
         {
             //根據指定的檔案格式建立對應的類
             string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
@@ -494,7 +527,8 @@ namespace SyncFormsApp
                 }
 
                 //寫檔
-                using (FileStream file = new FileStream("Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx", FileMode.Create))//產生檔案
+                string _saveFilePath = "".Equals(saveFilePath) ? "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx" : saveFilePath;
+                using (FileStream file = new FileStream(_saveFilePath, FileMode.Create))//產生檔案             
                 {
                     workbook.Write(file);
                 }
@@ -564,6 +598,7 @@ namespace SyncFormsApp
             else
                 return "";
         }
+
         #endregion
 
     }
@@ -613,7 +648,7 @@ namespace SyncFormsApp
                             IRow curRow = sheet.GetRow(i);
 
                             //by pass 空白行
-                            if (isRowEmpty(curRow)) break;
+                            if (IsRowEmpty(curRow)) break;
 
                             cellList = new List<DellCellModel>();
 
@@ -629,7 +664,7 @@ namespace SyncFormsApp
                                 }
 
                                 icell.SetCellType(CellType.String);
-                                var cellValue = icell.StringCellValue;
+                                var cellValue = Program.GetValueFromCell(icell);
 
                                 // IFont => colum style
                                 IFont ifont = icell.CellStyle.GetFont(workbook);
@@ -662,10 +697,12 @@ namespace SyncFormsApp
 
             return rowList;
         }
-        public string RowListToExcel(List<List<DellCellModel>> rowList)
+        public string RowListToExcel(List<List<DellCellModel>> rowList, string saveFilePath)
         {
             //根據指定的檔案格式建立對應的類
             string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
+
+            // 使用'using' 自動做Flush()、Close()、Dispose() 釋放資源
             using (FileStream templateFile = new FileStream(@"docs\format.xlsx", FileMode.Open, FileAccess.Read))
             {
 
@@ -747,7 +784,8 @@ namespace SyncFormsApp
                 }
 
                 //寫檔
-                using (FileStream file = new FileStream("Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx", FileMode.Create))//產生檔案
+                string _saveFilePath = "".Equals(saveFilePath) ? "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx" : saveFilePath;
+                using (FileStream file = new FileStream(_saveFilePath, FileMode.Create))//產生檔案
                 {
                     workbook.Write(file);
                 }
@@ -756,7 +794,7 @@ namespace SyncFormsApp
 
             return "OK";
         }
-        public bool isRowEmpty(IRow row)
+        public bool IsRowEmpty(IRow row)
         {
             for (int i = 0; i < row.LastCellNum; i++)
             {
@@ -768,6 +806,8 @@ namespace SyncFormsApp
             }
             return true;
         }
+
+
 
     }
 
