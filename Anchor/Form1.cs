@@ -38,16 +38,45 @@ namespace Anchor
                     {
                         //RMS to Dell
                         case 0:
-
                             DellModel dm = new DellModel();
-                            DataTable rmsDt = dm.RMSCsvToDataTable(txtRmsPath.Text.Trim(), ",");
-                            List<DellModel> rmsList = dm.RMSDataTableToList(rmsDt);
+                            List<string> csvRmsPathList = new List<string>();
+                            List<string> xlsRmsPathList = new List<string>();
+                            List<DellModel> rmsList = new List<DellModel>();
+                            string[] tokens = txtRmsPath.Text.Split(';');
+
+                            foreach (string fp in tokens)
+                            {
+                                if (fp.Contains(".csv"))
+                                    csvRmsPathList.Add(fp);
+                                else if (fp.Contains(".xls"))
+                                    xlsRmsPathList.Add(fp);
+                            }
+
+                            
+                            if (csvRmsPathList != null)
+                            {
+                                foreach (string crp in csvRmsPathList)
+                                {
+                                    DataTable csvRmsDt = dm.CsvRmsToDataTable(crp.Trim(), ",");
+                                    rmsList.AddRange(dm.CsvRmsDataTableToList(csvRmsDt));                                    
+                                }
+                            }
+
+                            if (xlsRmsPathList != null) {
+                                foreach (string xrp in xlsRmsPathList)
+                                {
+                                    DataTable xlsRmsDt = dm.ExcelToDataTable(xrp.Trim(), 0, 1);
+                                    rmsList.AddRange(dm.XlsRmsDataTableToList(xlsRmsDt));
+                                }
+                            }
+
                             List<DellModel> rmsColorList = dm.RMSListInputColor(rmsList);
 
                             List<DellModel> dellColorList;
+                            //如果沒選Dell excel 直接轉RMS
                             if (!string.IsNullOrEmpty(txtDellPath.Text))
                             {
-                                DataTable dellDt = dm.DellExcelToDataTable(txtDellPath.Text.Trim(), "Add Part", 5);
+                                DataTable dellDt = dm.ExcelToDataTable(txtDellPath.Text.Trim(), "Add Part", 5);
                                 List<DellModel> dellList = dm.DellDataTableToList(dellDt);
                                 dellColorList = dm.DellListInputColor(dellList);
 
@@ -55,7 +84,6 @@ namespace Anchor
                                 rmsColorList.AddRange(dellColorList);
                             }
 
-                            
 
                             //staus: broken, sold filter
                             dm.StautsFilter(rmsColorList);
@@ -99,7 +127,7 @@ namespace Anchor
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
 
@@ -109,11 +137,12 @@ namespace Anchor
         private void BtnBrowseRMS_Click(object sender, EventArgs e)
         {
 
-            opfd.Filter = "CSV Files (*.csv)|*.csv";
+            opfd.Filter = "RMS files (*.csv,*.xls)|*.csv;*.xls";
+            opfd.Multiselect = true;
             if (opfd.ShowDialog() == DialogResult.OK)
             {
-                string sFileName = opfd.FileName;
-                txtRmsPath.Text = sFileName;
+                string[] sFileName = opfd.FileNames;
+                txtRmsPath.Text = string.Join(";", sFileName);
             }
 
         }
@@ -147,7 +176,7 @@ namespace Anchor
             //StartProgress();
             //MessageBox.Show(GetSaveFilePath());
             DellModel dm = new DellModel();
-            dm.DellExcelToDataTable(@"D:\Desktop\test.xls", 0, 1);
+            dm.RMSListInputColor(dm.XlsRmsDataTableToList(dm.ExcelToDataTable(@"D:\Desktop\test.xls", 0, 1)));
 
         }
 

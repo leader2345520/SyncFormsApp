@@ -56,8 +56,11 @@ namespace Anchor
         }
     }
 
+    //BaseModel
+    class BaseModel { }
+
     //RMS To Dwll
-    class DellModel
+    class DellModel : BaseModel
     {
         #region getter/setter
         public string Location_s { get; set; }
@@ -90,7 +93,7 @@ namespace Anchor
         public byte[] Color { get; set; }
         #endregion
 
-        public DataTable RMSCsvToDataTable(string filename, string seperator)
+        public DataTable CsvRmsToDataTable(string filename, string seperator)
         {
             DataTable dt = new DataTable();
             bool isFirst = true;
@@ -159,7 +162,7 @@ namespace Anchor
 
             return dt;
         }
-        public List<DellModel> RMSDataTableToList(DataTable dt)
+        public List<DellModel> CsvRmsDataTableToList(DataTable dt)
         {
 
             List<DellModel> DellModelList = new List<DellModel>();
@@ -195,8 +198,55 @@ namespace Anchor
                         //PartComment = row["Part Comment"].ToString(),
                         //RecallDate = row["Recall Date"].ToString(),
                         //TDCHWL = row["TDC HWL"].ToString(),
-                        Comment = GetComment(row["Status"].ToString()),
+                        Comment = GetComment(row["Status"].ToString(), "TPE"),
                         Color = new byte[] { 0, 0, 255 }  //New Data 預設字體顏色藍色
+                    };
+                    DellModelList.Add(dm);
+                }
+
+
+            }
+
+            return DellModelList;
+        }
+        public List<DellModel> XlsRmsDataTableToList(DataTable dt)
+        {
+
+            List<DellModel> DellModelList = new List<DellModel>();
+            if (dt != null)
+            {
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    DellModel dm = new DellModel()
+                    {//Location_s = row["*Location"].ToString(),
+                        SerialNumber_s = row["Manuf. Shipment S/N"].ToString(),
+                        Part_s = row["Customer Part Number"].ToString(),
+                        Project_s = row["Purchase Purpose"].ToString(),
+                        PartLocation_s = "TDC->FOXCONN TJ->",//GetPartLocation(row["Status"].ToString(), row["Fixed Location"].ToString()),
+                        UserDefinedDescription_s = row["Other Description"].ToString(),
+                        Manufacturer_s = row["Manufacturer"].ToString(),
+                        //TestStatus = row["Test Status"].ToString(),
+                        //AgilePartType = row["Agile Part Type"].ToString(),
+                        Revision_s = row["HW/SW Version"].ToString(),
+                        Category_s = GetCategory(row["type 1"].ToString(), row["type 2"].ToString()),
+                        //Asset = row["Asset #"].ToString(),
+                        //FrozenCost_s = row["*Frozen Cost"].ToString(),
+                        UserDefinedOriginalCost_s = row["Price"].ToString(),
+                        //CountryofOrigin_s = row["*Country of Origin"].ToString(),
+                        //ManufacturerPartNumber = row["Manufacturer Part Number"].ToString(),
+                        //AllocatedBorrower = row["Allocated Borrower"].ToString(),
+                        //CurrentOwner_s = row["*Current Owner"].ToString(),
+                        //PurchasingCostCenter_s = row["*Purchasing Cost Center"].ToString(),
+                        //ShippingCarrierInformation = row["Shipping / Carrier Information"].ToString(),
+                        //BondingInformation = row["Bonding Information"].ToString(),
+                        //PONumber_s = row["*PO Number"].ToString(),
+                        //PartComment = row["Part Comment"].ToString(),
+                        //RecallDate = row["Recall Date"].ToString(),
+                        //TDCHWL = row["TDC HWL"].ToString(),
+                        Comment = GetComment(row["Status"].ToString(), "TJ"),
+                        Color = new byte[] { 0, 0, 255 }  //New Data 預設字體顏色藍色
+
                     };
                     DellModelList.Add(dm);
                 }
@@ -228,11 +278,12 @@ namespace Anchor
         }
 
 
-        public DataTable DellExcelToDataTable(string filePath, object sheetPage, int copyFormatRow)
+
+
+        public DataTable ExcelToDataTable(string filePath, object sheetPage, int copyFormatRow)
         {
             DataTable dt = new DataTable();
             bool isFirst = true;
-            
 
 
             //IWorkbook => excel file
@@ -360,12 +411,16 @@ namespace Anchor
             }
         }
 
+
         public void StautsFilter(List<DellModel> rmsColorList)
         {
             for (int i = 0; i < rmsColorList.Count; i++)
             {
                 if (("FilterOut").Contains(rmsColorList[i].Comment))
+                {
                     rmsColorList.RemoveAt(i);
+                    i--; //移除後物件為往上移動, 需 i-- 留在原位再判斷一次
+                }
             }
         }
         public Dictionary<string, object> PorjectFilter(List<DellModel> rmsColorList, string txtFilter)
@@ -585,18 +640,38 @@ namespace Anchor
             else
                 return "";
         }
-        public string GetComment(string status)
+        public string GetComment(string status, string location)
         {
-            if (new string[] { "available", "returned" }.Contains(status))
-                return "Idle";
-            else if ("borrowed".Equals(status))
-                return "In Use";
-            else if ("callback".Equals(status))
-                return "Check Out";
-            else if (new string[] { "sold", "broken" }.Contains(status))
-                return "FilterOut";
-            else
-                return "";
+            status = status.ToLower();
+            switch (location)
+            {
+                case "TJ":
+                    if ("available".Equals(status.ToLower()))
+                        return "Idle";
+                    else if ("borrowed".Equals(status.ToLower()))
+                        return "In Use";
+                    else if (new string[] { "callback", "returned" }.Contains(status))
+                        return "Check Out";
+                    else if (new string[] { "sold", "broken" }.Contains(status))
+                        return "FilterOut";
+                    else
+                        return "";
+
+                case "TPE":
+                    if (new string[] { "available", "returned" }.Contains(status))
+                        return "Idle";
+                    else if ("borrowed".Equals(status))
+                        return "In Use";
+                    else if ("callback".Equals(status))
+                        return "Check Out";
+                    else if (new string[] { "sold", "broken" }.Contains(status))
+                        return "FilterOut";
+                    else
+                        return "";
+
+                default:
+                    return "";
+            }
         }
 
         #endregion
@@ -604,7 +679,7 @@ namespace Anchor
     }
 
     //Dell Merge
-    class DellCellModel
+    class DellCellModel : BaseModel
     {
         public string Value { get; set; } = "";
         public byte[] FontColor { get; set; } = { 0, 0, 0 };
