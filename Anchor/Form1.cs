@@ -37,6 +37,7 @@ namespace Anchor
                     switch (tabControl.SelectedIndex)
                     {
                         //RMS to Dell
+                        #region
                         case 0:
                             DellModel dm = new DellModel();
                             List<string> csvRmsPathList = new List<string>();
@@ -52,17 +53,18 @@ namespace Anchor
                                     xlsRmsPathList.Add(fp);
                             }
 
-                            
+
                             if (csvRmsPathList != null)
                             {
                                 foreach (string crp in csvRmsPathList)
                                 {
                                     DataTable csvRmsDt = dm.CsvRmsToDataTable(crp.Trim(), ",");
-                                    rmsList.AddRange(dm.CsvRmsDataTableToList(csvRmsDt));                                    
+                                    rmsList.AddRange(dm.CsvRmsDataTableToList(csvRmsDt));
                                 }
                             }
 
-                            if (xlsRmsPathList != null) {
+                            if (xlsRmsPathList != null)
+                            {
                                 foreach (string xrp in xlsRmsPathList)
                                 {
                                     DataTable xlsRmsDt = dm.ExcelToDataTable(xrp.Trim(), 0, 1);
@@ -105,10 +107,11 @@ namespace Anchor
                             }
                             break;
 
+                        #endregion
 
                         //Dell Merge
+                        #region
                         case 1:
-
                             string filePaths = txtDellMultiPath.Text.Trim();
                             DellCellModel dmc = new DellCellModel();
                             List<List<DellCellModel>> rowList = dmc.CopySheetsToRowList(filePaths);
@@ -122,6 +125,25 @@ namespace Anchor
                             else
                                 MessageBox.Show("Merge Fail!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             break;
+                        #endregion
+
+                        //SAP format
+                        #region
+                        case 2:
+                            SapModel sm = new SapModel();
+                            DataTable dt = sm.ExcelToDataTable(txtSapPath.Text.Trim(), 0, 1);
+                            List<SapModel> sapList = sm.SapDataTableToList(dt);
+
+                            //匯出excel
+                            string message = sm.ListToExcel(sapList, saveFilePath);
+
+                            if (message.Equals("OK"))
+                                MessageBox.Show("Done", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                                MessageBox.Show("Fail!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            break;
+                            #endregion
                     }
                 }
             }
@@ -150,6 +172,7 @@ namespace Anchor
         private void BtnBrowseDell_Click(object sender, EventArgs e)
         {
             opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
             if (opfd.ShowDialog() == DialogResult.OK)
             {
                 string sFileName = opfd.FileName;
@@ -169,14 +192,23 @@ namespace Anchor
             }
 
         }
+        private void btnBrowseSap_Click(object sender, EventArgs e)
+        {
+            opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
+
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string sFileName = opfd.FileName;
+                txtSapPath.Text = sFileName;
+            }
+        }
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             //this.Close();
             //StartProgress();
-            //MessageBox.Show(GetSaveFilePath());
-            DellModel dm = new DellModel();
-            dm.RMSListInputColor(dm.XlsRmsDataTableToList(dm.ExcelToDataTable(@"D:\Desktop\test.xls", 0, 1)));
+            
 
         }
 
@@ -217,5 +249,7 @@ namespace Anchor
             }
             else return "";
         }
+
+       
     }
 }

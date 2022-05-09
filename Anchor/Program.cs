@@ -57,7 +57,85 @@ namespace Anchor
     }
 
     //BaseModel
-    class BaseModel { }
+    class BaseModel
+    {
+        public DataTable ExcelToDataTable(string filePath, object sheetPage, int copyFormatRow)
+        {
+            DataTable dt = new DataTable();
+            DataColumnCollection columns;
+            bool isFirst = true;
+
+
+            //IWorkbook => excel file
+            IWorkbook workbook = null;
+
+            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+
+                if (filePath.IndexOf(".xlsx") > 0)
+                    workbook = new XSSFWorkbook(fs);
+
+                else if (filePath.IndexOf(".xls") > 0)
+                    workbook = new HSSFWorkbook(fs);
+
+                ISheet sheet = null;
+
+                //ISheet => sheet
+                if (sheetPage is int)
+                {
+                    sheet = workbook.GetSheetAt((int)sheetPage);
+                    copyFormatRow = 1;
+                }
+                else sheet = workbook.GetSheet((string)sheetPage);
+
+                if (sheet != null)
+                {
+                    //LastRowNum => total count
+                    int rowCount = sheet.LastRowNum;
+                    for (int i = copyFormatRow - 1; i < rowCount + 1; i++)
+                    {
+                        // IRow => cursor
+                        IRow curRow = sheet.GetRow(i);
+                        DataRow dr = dt.NewRow();
+
+                        for (int j = 0; j < curRow.LastCellNum; j++)
+                        {
+
+                            ICell icell = curRow.GetCell(j);
+                            string cellValue = Program.GetValueFromCell(icell);
+
+
+                            if (isFirst)
+                            {
+                                columns = dt.Columns;
+
+                                if (columns.Contains(cellValue))
+                                    dt.Columns.Add(GetDistinctColumn(cellValue));
+                                else
+                                    dt.Columns.Add(cellValue);
+                            }
+                            else if (j < dt.Columns.Count) //避免資料 cell 長度大於 column 的長度
+                                dr[j] = cellValue;
+
+                        }
+
+                        if (!isFirst)
+                            dt.Rows.Add(dr);
+
+                        isFirst = false;
+
+                    }
+                }
+            }
+
+            return dt;
+
+        }
+        public string GetDistinctColumn(string cellValue)
+        {
+            return cellValue + DateTime.Now.ToString(("_HHmmss"));
+        }
+    }
 
     //RMS To Dwll
     class DellModel : BaseModel
@@ -278,72 +356,6 @@ namespace Anchor
         }
 
 
-
-
-        public DataTable ExcelToDataTable(string filePath, object sheetPage, int copyFormatRow)
-        {
-            DataTable dt = new DataTable();
-            bool isFirst = true;
-
-
-            //IWorkbook => excel file
-            IWorkbook workbook = null;
-
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-            {
-
-                if (filePath.IndexOf(".xlsx") > 0)
-                    workbook = new XSSFWorkbook(fs);
-
-                else if (filePath.IndexOf(".xls") > 0)
-                    workbook = new HSSFWorkbook(fs);
-
-                ISheet sheet = null;
-
-                //ISheet => sheet
-                if (sheetPage is int)
-                {
-                    sheet = workbook.GetSheetAt((int)sheetPage);
-                    copyFormatRow = 1;
-                }
-                else sheet = workbook.GetSheet((string)sheetPage);
-
-                if (sheet != null)
-                {
-                    //LastRowNum => total count
-                    int rowCount = sheet.LastRowNum;
-                    for (int i = copyFormatRow - 1; i < rowCount + 1; i++)
-                    {
-                        // IRow => cursor
-                        IRow curRow = sheet.GetRow(i);
-                        DataRow dr = dt.NewRow();
-
-                        for (int j = 0; j < curRow.LastCellNum; j++)
-                        {
-
-                            ICell icell = curRow.GetCell(j);
-                            string cellValue = Program.GetValueFromCell(icell);
-
-
-                            if (isFirst)
-                                dt.Columns.Add(cellValue);
-                            else
-                                dr[j] = cellValue;
-
-                        }
-
-                        if (!isFirst)
-                            dt.Rows.Add(dr);
-
-                        isFirst = false;
-
-                    }
-                }
-            }
-
-            return dt;
-
-        }
         public List<DellModel> DellDataTableToList(DataTable dt)
         {
             List<DellModel> DellModelList = new List<DellModel>();
@@ -452,7 +464,6 @@ namespace Anchor
         public string ColorListToExcel(List<DellModel> colorList, string saveFilePath)
         {
             //根據指定的檔案格式建立對應的類
-            string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
             using (FileStream templateFile = new FileStream(@"docs\format.xlsx", FileMode.Open, FileAccess.Read))
             {
 
@@ -886,6 +897,109 @@ namespace Anchor
 
     }
 
+    class SapModel : BaseModel
+    {
+        #region getter/setter
+        public string Supplier { get; set; }
+        public string DPN { get; set; }
+        public string Plnt { get; set; }
+        public string StorLoc { get; set; }
+        public string Sourcer { get; set; }
+        public string ShortText { get; set; }
+        public string Oun { get; set; }
+        public string PriceUSD { get; set; }
+        #endregion
+        public List<SapModel> SapDataTableToList(DataTable dt)
+        {
+            List<SapModel> SapModelList = new List<SapModel>();
+            if (dt != null)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    //PO 沒值才要放入表格
+                    if (string.IsNullOrEmpty((string)row["PO"]))
+                    {
+                        SapModel sm = new SapModel
+                        {
+                            Supplier = row["Supplier"].ToString(),
+                            DPN = row["DPN"].ToString(),
+                            Plnt = "PIL6",
+                            StorLoc = "LQ2N",
+                            Sourcer = row["Sourcer"].ToString(),
+                            ShortText = "", // row["Short text"].ToString(),
+                            Oun = "", // row["Oun"].ToString(),
+                            PriceUSD = row["Price-USD"].ToString()
+                        };
 
+                        SapModelList.Add(sm);
+                    }
+                }
+            }
+
+            return SapModelList;
+        }
+        public string ListToExcel(List<SapModel> sapList, string saveFilePath)
+        {
+            //根據指定的檔案格式建立對應的類
+            using (FileStream templateFile = new FileStream(@"docs\SAP_format.xlsx", FileMode.Open, FileAccess.Read))
+            {
+
+                IWorkbook workbook = new XSSFWorkbook(templateFile);
+                ISheet sheet = workbook.GetSheetAt(0);
+                int copyFormatRow = 1;  //Head 
+
+
+                #region 黑色模板
+                //設定處存格 style(黑色)
+                XSSFCellStyle cellStyle_black = (XSSFCellStyle)workbook.CreateCellStyle();
+                cellStyle_black.BorderBottom = BorderStyle.Thin;
+                cellStyle_black.BorderLeft = BorderStyle.Thin;
+                cellStyle_black.BorderRight = BorderStyle.Thin;
+                cellStyle_black.BorderTop = BorderStyle.Thin;
+                //設定字體sytle
+                XSSFFont font_black = (XSSFFont)workbook.CreateFont();
+                font_black.FontName = "Calibri";//字體
+                font_black.SetColor(new XSSFColor(new byte[] { 0, 0, 0 }));
+                cellStyle_black.SetFont(font_black);
+                #endregion
+
+                IRow row = null;
+                ICell cell = null;
+
+                //寫入資料
+                for (int i = 0; i < sapList.Count; i++)
+                {
+                    row = sheet.CreateRow(i + copyFormatRow);
+                    int cellIndex = 0;
+                    SapModel sm = sapList[i];
+
+                    //遍歷物件所有屬性
+                    PropertyInfo[] propInfo = sm.GetType().GetProperties();
+                    foreach (var p in propInfo)
+                    {
+                        // 放值
+                        cell = row.CreateCell(cellIndex);
+                        var val = p.GetValue(sm) == null ? "" : p.GetValue(sm).ToString();
+                        cell.SetCellValue(val);
+                        cell.CellStyle = cellStyle_black;
+
+                        cellIndex++;
+                    }
+                }
+
+                //寫檔
+                string _saveFilePath = "".Equals(saveFilePath) ? "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx" : saveFilePath;
+                using (FileStream file = new FileStream(_saveFilePath, FileMode.Create))//產生檔案             
+                {
+                    workbook.Write(file);
+                }
+            }
+
+
+            return "OK";
+        }
+
+
+    }
 
 }
