@@ -46,7 +46,7 @@ namespace Anchor
             this.txtDellMultiPath = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
-            this.btnBrowseSap = new System.Windows.Forms.Button();
+            this.BtnBrowseSap = new System.Windows.Forms.Button();
             this.txtSapPath = new System.Windows.Forms.TextBox();
             this.btnExe = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -219,7 +219,7 @@ namespace Anchor
             this.tabPage3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.tabPage3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.tabPage3.Controls.Add(this.label6);
-            this.tabPage3.Controls.Add(this.btnBrowseSap);
+            this.tabPage3.Controls.Add(this.BtnBrowseSap);
             this.tabPage3.Controls.Add(this.txtSapPath);
             this.tabPage3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
             this.tabPage3.Location = new System.Drawing.Point(4, 27);
@@ -238,18 +238,18 @@ namespace Anchor
             this.label6.TabIndex = 11;
             this.label6.Text = "Choose SAP table(.xlsx)";
             // 
-            // btnBrowseSap
+            // BtnBrowseSap
             // 
-            this.btnBrowseSap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
-            this.btnBrowseSap.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnBrowseSap.ForeColor = System.Drawing.Color.Black;
-            this.btnBrowseSap.Location = new System.Drawing.Point(336, 41);
-            this.btnBrowseSap.Name = "btnBrowseSap";
-            this.btnBrowseSap.Size = new System.Drawing.Size(91, 23);
-            this.btnBrowseSap.TabIndex = 9;
-            this.btnBrowseSap.Text = "Browse";
-            this.btnBrowseSap.UseVisualStyleBackColor = false;
-            this.btnBrowseSap.Click += new System.EventHandler(this.btnBrowseSap_Click);
+            this.BtnBrowseSap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.BtnBrowseSap.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.BtnBrowseSap.ForeColor = System.Drawing.Color.Black;
+            this.BtnBrowseSap.Location = new System.Drawing.Point(336, 41);
+            this.BtnBrowseSap.Name = "BtnBrowseSap";
+            this.BtnBrowseSap.Size = new System.Drawing.Size(91, 23);
+            this.BtnBrowseSap.TabIndex = 9;
+            this.BtnBrowseSap.Text = "Browse";
+            this.BtnBrowseSap.UseVisualStyleBackColor = false;
+            this.BtnBrowseSap.Click += new System.EventHandler(this.BtnBrowseSap_Click);
             // 
             // txtSapPath
             // 
@@ -336,7 +336,7 @@ namespace Anchor
         private System.Windows.Forms.ProgressBar prgsBar;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button btnBrowseSap;
+        private System.Windows.Forms.Button BtnBrowseSap;
         private System.Windows.Forms.TextBox txtSapPath;
     }
 }

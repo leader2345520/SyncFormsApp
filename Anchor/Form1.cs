@@ -1,4 +1,6 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using Aspose.Words;
+using Aspose.Words.Tables;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Font = System.Drawing.Font;
 
 namespace Anchor
 {
@@ -83,7 +86,8 @@ namespace Anchor
                                 dellColorList = dm.DellListInputColor(dellList);
 
                                 //合併rms .csv & dell .xlsx
-                                rmsColorList.AddRange(dellColorList);
+                                rmsColorList = dm.CreateAndUpdateDellFile(rmsColorList, dellColorList);
+                                //rmsColorList.AddRange(dellColorList);
                             }
 
 
@@ -192,7 +196,8 @@ namespace Anchor
             }
 
         }
-        private void btnBrowseSap_Click(object sender, EventArgs e)
+
+        private void BtnBrowseSap_Click(object sender, EventArgs e)
         {
             opfd.Filter = "Excel Files|*.xlsx";
             opfd.Multiselect = false;
@@ -206,10 +211,14 @@ namespace Anchor
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
-            //this.Close();
+            this.Close();
             //StartProgress();
-            
 
+            //SowModel sm = new SowModel();
+            //DataTable dt = sm.WordSowToDataTable(@"D:\Desktop\Jennifer_test\YETI MAY FY23 SOW v0.4.docx");
+            //List<SowModel> list = sm.WrodSowDataTableToList(dt);
+            //sm.ListToExcel(list, @"D:\Desktop\Jennifer_test\xxxxx.xlsx", @"docs\Sample_polling_format.xlsx", "Allocation polling-project", 3);
+            //sm.ExcelToDataTable(@"D:\Desktop\Jennifer_test\merge.xlsx", "Allocation polling-project", 3);
         }
 
         private void StartProgress()
@@ -250,6 +259,6 @@ namespace Anchor
             else return "";
         }
 
-       
+
     }
 }
