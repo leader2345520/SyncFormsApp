@@ -12,19 +12,19 @@ using BorderStyle = NPOI.SS.UserModel.BorderStyle;
 
 namespace Anchor
 {
-    class DellCellModel : BaseModel
+    class DellMergeModel : BaseModel
     {
         #region getter/setter
         public string Value { get; set; } = "";
         public byte[] FontColor { get; set; } = { 0, 0, 0 };
         #endregion
 
-        public List<List<DellCellModel>> CopySheetsToRowList(string filePath)
+        public List<List<DellMergeModel>> CopySheetsToRowList(string filePath)
         {
 
-            DellCellModel dmc;
-            List<DellCellModel> cellList;
-            List<List<DellCellModel>> rowList = new List<List<DellCellModel>>();
+            DellMergeModel dmm;
+            List<DellMergeModel> cellList;
+            List<List<DellMergeModel>> rowList = new List<List<DellMergeModel>>();
             int copyFormatRow = 5;  //Head
             string[] tokens = filePath.Split(';');
 
@@ -59,16 +59,16 @@ namespace Anchor
                             //by pass 空白行
                             if (IsRowEmpty(curRow)) break;
 
-                            cellList = new List<DellCellModel>();
+                            cellList = new List<DellMergeModel>();
 
                             for (int j = 0; j < curRow.LastCellNum; j++)
                             {
                                 // ICell => column
                                 ICell icell = curRow.GetCell(j);
-                                dmc = new DellCellModel();
+                                dmm = new DellMergeModel();
                                 if (icell == null)
                                 {
-                                    cellList.Add(dmc);
+                                    cellList.Add(dmm);
                                     continue;
                                 }
 
@@ -77,18 +77,17 @@ namespace Anchor
 
                                 // IFont => colum style
                                 IFont ifont = icell.CellStyle.GetFont(workbook);
+                                byte[] fontColor;
+
+                                // 如果找不到顏色有可能就是 "自動", 當做是黑色處理
                                 if ((ifont as XSSFFont).GetXSSFColor() == null)
-                                {
-                                    cellList.Add(dmc);
-                                    continue;
-                                }
-                                byte[] fontColor = (ifont as XSSFFont).GetXSSFColor().RGB;
+                                    fontColor = new byte[] { 0, 0, 0 };
+                                else
+                                    fontColor = (ifont as XSSFFont).GetXSSFColor().RGB;
 
-
-
-                                dmc.Value = cellValue;
-                                dmc.FontColor = fontColor;
-                                cellList.Add(dmc);
+                                dmm.Value = cellValue;
+                                dmm.FontColor = fontColor;
+                                cellList.Add(dmm);
 
                             }
                             rowList.Add(cellList);
@@ -106,7 +105,7 @@ namespace Anchor
 
             return rowList;
         }
-        public string RowListToExcel(List<List<DellCellModel>> rowList, string saveFilePath)
+        public string RowListToExcel(List<List<DellMergeModel>> rowList, string saveFilePath)
         {
             //根據指定的檔案格式建立對應的類
             string basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
@@ -147,6 +146,20 @@ namespace Anchor
                 cellStyle_black.SetFont(font_black);
                 #endregion
 
+                #region 紅色模板
+                //設定處存格 style(紅色)
+                XSSFCellStyle cellStyle_red = (XSSFCellStyle)workbook.CreateCellStyle();
+                cellStyle_red.BorderBottom = BorderStyle.Thin;
+                cellStyle_red.BorderLeft = BorderStyle.Thin;
+                cellStyle_red.BorderRight = BorderStyle.Thin;
+                cellStyle_red.BorderTop = BorderStyle.Thin;
+                //設定字體sytle
+                XSSFFont font_red = (XSSFFont)workbook.CreateFont();
+                font_red.FontName = "Calibri";//字體
+                font_red.SetColor(new XSSFColor(new byte[] { 255, 0, 0 }));
+                cellStyle_red.SetFont(font_red);
+                #endregion
+
                 IRow row = null;
                 ICell cell = null;
 
@@ -156,7 +169,7 @@ namespace Anchor
                     row = sheet.CreateRow(i + copyFormatRow);
                     int cellIndex = 0;
 
-                    foreach (DellCellModel dmc in rowList[i])
+                    foreach (DellMergeModel dmc in rowList[i])
                     {
                         //放值
                         cell = row.CreateCell(cellIndex);
@@ -168,6 +181,8 @@ namespace Anchor
                             cell.CellStyle = cellStyle_black;
                         else if ((BitConverter.ToString(dmc.FontColor) == BitConverter.ToString(new byte[] { 0, 0, 255 })))
                             cell.CellStyle = cellStyle_blue;
+                        else if ((BitConverter.ToString(dmc.FontColor) == BitConverter.ToString(new byte[] { 255, 0, 0 })))
+                            cell.CellStyle = cellStyle_red;
                         else
                         {
                             //設定處存格 style(客製)
@@ -194,10 +209,7 @@ namespace Anchor
 
                 //寫檔
                 string _saveFilePath = "".Equals(saveFilePath) ? "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx" : saveFilePath;
-                using (FileStream file = new FileStream(_saveFilePath, FileMode.Create))//產生檔案
-                {
-                    workbook.Write(file);
-                }
+                SaveWorkbook(workbook, _saveFilePath);
             }
 
 
@@ -205,6 +217,8 @@ namespace Anchor
         }
         public bool IsRowEmpty(IRow row)
         {
+            if (row == null) return true;
+
             for (int i = 0; i < row.LastCellNum; i++)
             {
                 ICell icell = row.GetCell(i);

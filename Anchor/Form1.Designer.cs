@@ -1,4 +1,6 @@
 ﻿
+using System.Drawing;
+
 namespace Anchor
 {
     partial class Form1
@@ -32,6 +34,8 @@ namespace Anchor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.label12 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -46,8 +50,28 @@ namespace Anchor
             this.txtDellMultiPath = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
-            this.BtnBrowseSap = new System.Windows.Forms.Button();
+            this.btnBrowseSap = new System.Windows.Forms.Button();
             this.txtSapPath = new System.Windows.Forms.TextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnSumTable = new System.Windows.Forms.Button();
+            this.txtSumTablePath = new System.Windows.Forms.TextBox();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnUpdat = new System.Windows.Forms.Button();
+            this.dgvSow = new System.Windows.Forms.DataGridView();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.txtManu = new System.Windows.Forms.TextBox();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnInsert = new System.Windows.Forms.Button();
+            this.txtDpn = new System.Windows.Forms.TextBox();
+            this.txtCategory = new System.Windows.Forms.TextBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btnBrowsePo = new System.Windows.Forms.Button();
+            this.txtPoPath = new System.Windows.Forms.TextBox();
             this.btnExe = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.prgsBar = new System.Windows.Forms.ProgressBar();
@@ -55,6 +79,9 @@ namespace Anchor
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSow)).BeginInit();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -63,18 +90,22 @@ namespace Anchor
             this.tabControl.Controls.Add(this.tabPage1);
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage3);
+            this.tabControl.Controls.Add(this.tabPage4);
+            this.tabControl.Controls.Add(this.tabPage5);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(449, 327);
+            this.tabControl.Size = new System.Drawing.Size(841, 499);
             this.tabControl.TabIndex = 1;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.tabPage1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.tabPage1.Controls.Add(this.dateTimePicker);
+            this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.label1);
@@ -87,13 +118,36 @@ namespace Anchor
             this.tabPage1.Location = new System.Drawing.Point(4, 27);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(441, 296);
+            this.tabPage1.Size = new System.Drawing.Size(833, 468);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "RMS to Dell";
             // 
+            // dateTimePicker
+            // 
+            this.dateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePicker.Location = new System.Drawing.Point(194, 242);
+            this.dateTimePicker.MaxDate = new System.DateTime(2200, 12, 31, 0, 0, 0, 0);
+            this.dateTimePicker.MinDate = new System.DateTime(2018, 1, 1, 0, 0, 0, 0);
+            this.dateTimePicker.Name = "dateTimePicker";
+            this.dateTimePicker.ShowCheckBox = true;
+            this.dateTimePicker.Size = new System.Drawing.Size(317, 23);
+            this.dateTimePicker.TabIndex = 11;
+            this.dateTimePicker.Value = new System.DateTime(2022, 7, 1, 0, 0, 0, 0);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(191, 222);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(245, 17);
+            this.label12.TabIndex = 10;
+            this.label12.Text = "Choose a verification date for TJ";
+            // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(13, 159);
+            this.label3.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(191, 296);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(414, 54);
             this.label3.TabIndex = 7;
@@ -103,18 +157,20 @@ namespace Anchor
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 98);
+            this.label2.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(191, 144);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(108, 15);
+            this.label2.Size = new System.Drawing.Size(121, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Choose Dell file";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 24);
+            this.label1.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(191, 74);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(173, 15);
+            this.label1.Size = new System.Drawing.Size(196, 17);
             this.label1.TabIndex = 5;
             this.label1.Text = "Choose RMS file(.csv,.xls)";
             // 
@@ -122,10 +178,11 @@ namespace Anchor
             // 
             this.btnBrowseDell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
             this.btnBrowseDell.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowseDell.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBrowseDell.ForeColor = System.Drawing.Color.Black;
-            this.btnBrowseDell.Location = new System.Drawing.Point(336, 112);
+            this.btnBrowseDell.Location = new System.Drawing.Point(517, 162);
             this.btnBrowseDell.Name = "btnBrowseDell";
-            this.btnBrowseDell.Size = new System.Drawing.Size(91, 23);
+            this.btnBrowseDell.Size = new System.Drawing.Size(91, 25);
             this.btnBrowseDell.TabIndex = 4;
             this.btnBrowseDell.Text = "Browse";
             this.btnBrowseDell.UseVisualStyleBackColor = false;
@@ -135,10 +192,11 @@ namespace Anchor
             // 
             this.btnBrowseRMS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
             this.btnBrowseRMS.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowseRMS.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBrowseRMS.ForeColor = System.Drawing.Color.Black;
-            this.btnBrowseRMS.Location = new System.Drawing.Point(336, 41);
+            this.btnBrowseRMS.Location = new System.Drawing.Point(517, 91);
             this.btnBrowseRMS.Name = "btnBrowseRMS";
-            this.btnBrowseRMS.Size = new System.Drawing.Size(91, 23);
+            this.btnBrowseRMS.Size = new System.Drawing.Size(91, 25);
             this.btnBrowseRMS.TabIndex = 3;
             this.btnBrowseRMS.Text = "Browse";
             this.btnBrowseRMS.UseVisualStyleBackColor = false;
@@ -146,26 +204,29 @@ namespace Anchor
             // 
             // txtFilter
             // 
-            this.txtFilter.Location = new System.Drawing.Point(12, 217);
+            this.txtFilter.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFilter.Location = new System.Drawing.Point(193, 353);
             this.txtFilter.Name = "txtFilter";
-            this.txtFilter.Size = new System.Drawing.Size(318, 23);
+            this.txtFilter.Size = new System.Drawing.Size(318, 24);
             this.txtFilter.TabIndex = 2;
             this.txtFilter.Text = "None";
             // 
             // txtDellPath
             // 
-            this.txtDellPath.Location = new System.Drawing.Point(12, 113);
+            this.txtDellPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDellPath.Location = new System.Drawing.Point(193, 163);
             this.txtDellPath.Name = "txtDellPath";
-            this.txtDellPath.Size = new System.Drawing.Size(318, 23);
+            this.txtDellPath.Size = new System.Drawing.Size(318, 24);
             this.txtDellPath.TabIndex = 1;
             // 
             // txtRmsPath
             // 
             this.txtRmsPath.BackColor = System.Drawing.SystemColors.Window;
+            this.txtRmsPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRmsPath.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtRmsPath.Location = new System.Drawing.Point(12, 42);
+            this.txtRmsPath.Location = new System.Drawing.Point(193, 92);
             this.txtRmsPath.Name = "txtRmsPath";
-            this.txtRmsPath.Size = new System.Drawing.Size(318, 23);
+            this.txtRmsPath.Size = new System.Drawing.Size(318, 24);
             this.txtRmsPath.TabIndex = 0;
             // 
             // tabPage2
@@ -179,16 +240,17 @@ namespace Anchor
             this.tabPage2.Location = new System.Drawing.Point(4, 27);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(441, 296);
+            this.tabPage2.Size = new System.Drawing.Size(833, 468);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Dell merge";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 24);
+            this.label4.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(191, 74);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(147, 15);
+            this.label4.Size = new System.Drawing.Size(164, 17);
             this.label4.TabIndex = 8;
             this.label4.Text = "Choose Dell file(.xlsx)";
             // 
@@ -196,10 +258,11 @@ namespace Anchor
             // 
             this.btnBrowseMultiDell.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
             this.btnBrowseMultiDell.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowseMultiDell.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBrowseMultiDell.ForeColor = System.Drawing.Color.Black;
-            this.btnBrowseMultiDell.Location = new System.Drawing.Point(336, 41);
+            this.btnBrowseMultiDell.Location = new System.Drawing.Point(517, 91);
             this.btnBrowseMultiDell.Name = "btnBrowseMultiDell";
-            this.btnBrowseMultiDell.Size = new System.Drawing.Size(91, 23);
+            this.btnBrowseMultiDell.Size = new System.Drawing.Size(91, 25);
             this.btnBrowseMultiDell.TabIndex = 7;
             this.btnBrowseMultiDell.Text = "Browse";
             this.btnBrowseMultiDell.UseVisualStyleBackColor = false;
@@ -208,10 +271,11 @@ namespace Anchor
             // txtDellMultiPath
             // 
             this.txtDellMultiPath.BackColor = System.Drawing.SystemColors.Window;
+            this.txtDellMultiPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDellMultiPath.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtDellMultiPath.Location = new System.Drawing.Point(12, 42);
+            this.txtDellMultiPath.Location = new System.Drawing.Point(193, 92);
             this.txtDellMultiPath.Name = "txtDellMultiPath";
-            this.txtDellMultiPath.Size = new System.Drawing.Size(318, 23);
+            this.txtDellMultiPath.Size = new System.Drawing.Size(318, 24);
             this.txtDellMultiPath.TabIndex = 6;
             // 
             // tabPage3
@@ -219,51 +283,295 @@ namespace Anchor
             this.tabPage3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.tabPage3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.tabPage3.Controls.Add(this.label6);
-            this.tabPage3.Controls.Add(this.BtnBrowseSap);
+            this.tabPage3.Controls.Add(this.btnBrowseSap);
             this.tabPage3.Controls.Add(this.txtSapPath);
             this.tabPage3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
             this.tabPage3.Location = new System.Drawing.Point(4, 27);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(441, 296);
+            this.tabPage3.Size = new System.Drawing.Size(833, 468);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "SAP format";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 24);
+            this.label6.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(191, 74);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(161, 15);
+            this.label6.Size = new System.Drawing.Size(181, 17);
             this.label6.TabIndex = 11;
             this.label6.Text = "Choose SAP table(.xlsx)";
             // 
-            // BtnBrowseSap
+            // btnBrowseSap
             // 
-            this.BtnBrowseSap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
-            this.BtnBrowseSap.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BtnBrowseSap.ForeColor = System.Drawing.Color.Black;
-            this.BtnBrowseSap.Location = new System.Drawing.Point(336, 41);
-            this.BtnBrowseSap.Name = "BtnBrowseSap";
-            this.BtnBrowseSap.Size = new System.Drawing.Size(91, 23);
-            this.BtnBrowseSap.TabIndex = 9;
-            this.BtnBrowseSap.Text = "Browse";
-            this.BtnBrowseSap.UseVisualStyleBackColor = false;
-            this.BtnBrowseSap.Click += new System.EventHandler(this.BtnBrowseSap_Click);
+            this.btnBrowseSap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.btnBrowseSap.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowseSap.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBrowseSap.ForeColor = System.Drawing.Color.Black;
+            this.btnBrowseSap.Location = new System.Drawing.Point(517, 91);
+            this.btnBrowseSap.Name = "btnBrowseSap";
+            this.btnBrowseSap.Size = new System.Drawing.Size(91, 25);
+            this.btnBrowseSap.TabIndex = 9;
+            this.btnBrowseSap.Text = "Browse";
+            this.btnBrowseSap.UseVisualStyleBackColor = false;
+            this.btnBrowseSap.Click += new System.EventHandler(this.BtnBrowseSap_Click);
             // 
             // txtSapPath
             // 
             this.txtSapPath.BackColor = System.Drawing.SystemColors.Window;
+            this.txtSapPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSapPath.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtSapPath.Location = new System.Drawing.Point(12, 42);
+            this.txtSapPath.Location = new System.Drawing.Point(193, 92);
             this.txtSapPath.Name = "txtSapPath";
-            this.txtSapPath.Size = new System.Drawing.Size(318, 23);
+            this.txtSapPath.Size = new System.Drawing.Size(318, 24);
             this.txtSapPath.TabIndex = 7;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tabPage4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.tabPage4.Controls.Add(this.label10);
+            this.tabPage4.Controls.Add(this.btnSumTable);
+            this.tabPage4.Controls.Add(this.txtSumTablePath);
+            this.tabPage4.Controls.Add(this.btnDelete);
+            this.tabPage4.Controls.Add(this.btnUpdat);
+            this.tabPage4.Controls.Add(this.dgvSow);
+            this.tabPage4.Controls.Add(this.label8);
+            this.tabPage4.Controls.Add(this.label9);
+            this.tabPage4.Controls.Add(this.txtManu);
+            this.tabPage4.Controls.Add(this.txtDescription);
+            this.tabPage4.Controls.Add(this.label5);
+            this.tabPage4.Controls.Add(this.label7);
+            this.tabPage4.Controls.Add(this.btnInsert);
+            this.tabPage4.Controls.Add(this.txtDpn);
+            this.tabPage4.Controls.Add(this.txtCategory);
+            this.tabPage4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.tabPage4.Location = new System.Drawing.Point(4, 27);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(833, 468);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "SOW to PDL";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(10, 374);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(217, 17);
+            this.label10.TabIndex = 24;
+            this.label10.Text = "Choose summary table(.xlsx)";
+            // 
+            // btnSumTable
+            // 
+            this.btnSumTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.btnSumTable.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnSumTable.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSumTable.ForeColor = System.Drawing.Color.Black;
+            this.btnSumTable.Location = new System.Drawing.Point(723, 370);
+            this.btnSumTable.Name = "btnSumTable";
+            this.btnSumTable.Size = new System.Drawing.Size(91, 25);
+            this.btnSumTable.TabIndex = 23;
+            this.btnSumTable.Text = "Browse";
+            this.btnSumTable.UseVisualStyleBackColor = false;
+            this.btnSumTable.Click += new System.EventHandler(this.BtnBrowseSumTable_Click);
+            // 
+            // txtSumTablePath
+            // 
+            this.txtSumTablePath.BackColor = System.Drawing.SystemColors.Window;
+            this.txtSumTablePath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSumTablePath.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtSumTablePath.Location = new System.Drawing.Point(233, 370);
+            this.txtSumTablePath.Name = "txtSumTablePath";
+            this.txtSumTablePath.Size = new System.Drawing.Size(484, 24);
+            this.txtSumTablePath.TabIndex = 22;
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDelete.ForeColor = System.Drawing.Color.Black;
+            this.btnDelete.Location = new System.Drawing.Point(723, 107);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(91, 30);
+            this.btnDelete.TabIndex = 21;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
+            // 
+            // btnUpdat
+            // 
+            this.btnUpdat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnUpdat.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnUpdat.ForeColor = System.Drawing.Color.Black;
+            this.btnUpdat.Location = new System.Drawing.Point(626, 107);
+            this.btnUpdat.Name = "btnUpdat";
+            this.btnUpdat.Size = new System.Drawing.Size(91, 30);
+            this.btnUpdat.TabIndex = 20;
+            this.btnUpdat.Text = "Update";
+            this.btnUpdat.UseVisualStyleBackColor = false;
+            this.btnUpdat.Click += new System.EventHandler(this.BtnUpdat_Click);
+            // 
+            // dgvSow
+            // 
+            this.dgvSow.AllowUserToAddRows = false;
+            this.dgvSow.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvSow.BackgroundColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.dgvSow.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSow.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.dgvSow.Location = new System.Drawing.Point(13, 145);
+            this.dgvSow.Name = "dgvSow";
+            this.dgvSow.ReadOnly = true;
+            this.dgvSow.RowTemplate.Height = 24;
+            this.dgvSow.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvSow.Size = new System.Drawing.Size(801, 215);
+            this.dgvSow.TabIndex = 19;
+            this.dgvSow.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DgvSow_CellClick);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(437, 68);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(124, 17);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Manufacturers :";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(10, 67);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(101, 17);
+            this.label9.TabIndex = 17;
+            this.label9.Text = "Description :";
+            // 
+            // txtManu
+            // 
+            this.txtManu.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtManu.Location = new System.Drawing.Point(567, 64);
+            this.txtManu.Name = "txtManu";
+            this.txtManu.Size = new System.Drawing.Size(247, 24);
+            this.txtManu.TabIndex = 14;
+            // 
+            // txtDescription
+            // 
+            this.txtDescription.BackColor = System.Drawing.SystemColors.Window;
+            this.txtDescription.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDescription.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtDescription.Location = new System.Drawing.Point(110, 64);
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.Size = new System.Drawing.Size(318, 24);
+            this.txtDescription.TabIndex = 13;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(443, 28);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 17);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "DPN :";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(27, 28);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(84, 17);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "Category :";
+            // 
+            // btnInsert
+            // 
+            this.btnInsert.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btnInsert.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnInsert.ForeColor = System.Drawing.Color.Black;
+            this.btnInsert.Location = new System.Drawing.Point(498, 107);
+            this.btnInsert.Name = "btnInsert";
+            this.btnInsert.Size = new System.Drawing.Size(91, 30);
+            this.btnInsert.TabIndex = 10;
+            this.btnInsert.Text = "Insert";
+            this.btnInsert.UseVisualStyleBackColor = false;
+            this.btnInsert.Click += new System.EventHandler(this.BtnInsert_Click);
+            // 
+            // txtDpn
+            // 
+            this.txtDpn.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDpn.Location = new System.Drawing.Point(498, 25);
+            this.txtDpn.Name = "txtDpn";
+            this.txtDpn.Size = new System.Drawing.Size(202, 24);
+            this.txtDpn.TabIndex = 8;
+            // 
+            // txtCategory
+            // 
+            this.txtCategory.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCategory.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCategory.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCategory.Location = new System.Drawing.Point(110, 25);
+            this.txtCategory.Name = "txtCategory";
+            this.txtCategory.Size = new System.Drawing.Size(246, 24);
+            this.txtCategory.TabIndex = 7;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tabPage5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.tabPage5.Controls.Add(this.label11);
+            this.tabPage5.Controls.Add(this.btnBrowsePo);
+            this.tabPage5.Controls.Add(this.txtPoPath);
+            this.tabPage5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.tabPage5.Location = new System.Drawing.Point(4, 27);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(833, 468);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "PO weekly report";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(191, 74);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(237, 17);
+            this.label11.TabIndex = 14;
+            this.label11.Text = "Choose PO weekly report(.xlsx)";
+            // 
+            // btnBrowsePo
+            // 
+            this.btnBrowsePo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.btnBrowsePo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowsePo.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBrowsePo.ForeColor = System.Drawing.Color.Black;
+            this.btnBrowsePo.Location = new System.Drawing.Point(517, 91);
+            this.btnBrowsePo.Name = "btnBrowsePo";
+            this.btnBrowsePo.Size = new System.Drawing.Size(91, 25);
+            this.btnBrowsePo.TabIndex = 13;
+            this.btnBrowsePo.Text = "Browse";
+            this.btnBrowsePo.UseVisualStyleBackColor = false;
+            this.btnBrowsePo.Click += new System.EventHandler(this.BtnBrowsePo_Click);
+            // 
+            // txtPoPath
+            // 
+            this.txtPoPath.BackColor = System.Drawing.SystemColors.Window;
+            this.txtPoPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPoPath.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtPoPath.Location = new System.Drawing.Point(193, 92);
+            this.txtPoPath.Name = "txtPoPath";
+            this.txtPoPath.Size = new System.Drawing.Size(318, 24);
+            this.txtPoPath.TabIndex = 12;
             // 
             // btnExe
             // 
             this.btnExe.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExe.Location = new System.Drawing.Point(18, 286);
+            this.btnExe.Location = new System.Drawing.Point(641, 461);
             this.btnExe.Name = "btnExe";
             this.btnExe.Size = new System.Drawing.Size(91, 30);
             this.btnExe.TabIndex = 5;
@@ -274,7 +582,7 @@ namespace Anchor
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(115, 286);
+            this.btnCancel.Location = new System.Drawing.Point(738, 461);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(91, 30);
             this.btnCancel.TabIndex = 6;
@@ -284,7 +592,7 @@ namespace Anchor
             // 
             // prgsBar
             // 
-            this.prgsBar.Location = new System.Drawing.Point(213, 287);
+            this.prgsBar.Location = new System.Drawing.Point(415, 464);
             this.prgsBar.Name = "prgsBar";
             this.prgsBar.Size = new System.Drawing.Size(220, 26);
             this.prgsBar.TabIndex = 7;
@@ -295,16 +603,16 @@ namespace Anchor
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(449, 327);
+            this.ClientSize = new System.Drawing.Size(841, 499);
             this.Controls.Add(this.prgsBar);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnExe);
             this.Controls.Add(this.tabControl);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Anchor";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -312,6 +620,11 @@ namespace Anchor
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSow)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -320,10 +633,8 @@ namespace Anchor
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btnBrowseDell;
         private System.Windows.Forms.Button btnBrowseRMS;
         private System.Windows.Forms.TextBox txtFilter;
-        private System.Windows.Forms.TextBox txtDellPath;
         private System.Windows.Forms.TextBox txtRmsPath;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btnExe;
@@ -336,8 +647,32 @@ namespace Anchor
         private System.Windows.Forms.ProgressBar prgsBar;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button BtnBrowseSap;
+        private System.Windows.Forms.Button btnBrowseSap;
         private System.Windows.Forms.TextBox txtSapPath;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txtManu;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnInsert;
+        private System.Windows.Forms.TextBox txtDpn;
+        private System.Windows.Forms.TextBox txtCategory;
+        private System.Windows.Forms.DataGridView dgvSow;
+        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Button btnUpdat;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnSumTable;
+        private System.Windows.Forms.TextBox txtSumTablePath;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button btnBrowsePo;
+        private System.Windows.Forms.TextBox txtPoPath;
+        private System.Windows.Forms.DateTimePicker dateTimePicker;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button btnBrowseDell;
+        private System.Windows.Forms.TextBox txtDellPath;
     }
 }
 

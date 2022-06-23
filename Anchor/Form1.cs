@@ -1,18 +1,8 @@
-﻿using Aspose.Words;
-using Aspose.Words.Tables;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
+﻿using Anchor.Model;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Font = System.Drawing.Font;
 
@@ -20,6 +10,8 @@ namespace Anchor
 {
     public partial class Form1 : Form
     {
+        DataTable dt = new DataTable();
+        int gdvSowIndex;
         OpenFileDialog opfd;
         SaveFileDialog sfd = new SaveFileDialog();
         public Form1()
@@ -28,10 +20,22 @@ namespace Anchor
             opfd = new OpenFileDialog();
             opfd.RestoreDirectory = true;
             opfd.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            //SOW 先隱藏
+            this.tabControl.TabPages.Remove(this.tabPage4);
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            dt.Columns.Add("Category", Type.GetType("System.String"));
+            dt.Columns.Add("DPN", Type.GetType("System.String"));
+            dt.Columns.Add("Description", Type.GetType("System.String"));
+            dt.Columns.Add("Manufacturers", Type.GetType("System.String"));
+            dgvSow.DataSource = dt;
+
         }
 
         private void BtnExe_Click(object sender, EventArgs e)
         {
+            string message;
             try
             {
                 string saveFilePath = GetSaveFilePath();
@@ -47,6 +51,7 @@ namespace Anchor
                             List<string> xlsRmsPathList = new List<string>();
                             List<DellModel> rmsList = new List<DellModel>();
                             string[] tokens = txtRmsPath.Text.Split(';');
+                            string tjValidDate = dateTimePicker.Value.ToString("yyyy/MM/dd 00:00:00");
 
                             foreach (string fp in tokens)
                             {
@@ -86,7 +91,7 @@ namespace Anchor
                                 dellColorList = dm.DellListInputColor(dellList);
 
                                 //合併rms .csv & dell .xlsx
-                                rmsColorList = dm.CreateAndUpdateDellFile(rmsColorList, dellColorList);
+                                rmsColorList = dm.CreateAndUpdateDellFile(rmsColorList, dellColorList, tjValidDate);
                                 //rmsColorList.AddRange(dellColorList);
                             }
 
@@ -117,8 +122,8 @@ namespace Anchor
                         #region
                         case 1:
                             string filePaths = txtDellMultiPath.Text.Trim();
-                            DellCellModel dmc = new DellCellModel();
-                            List<List<DellCellModel>> rowList = dmc.CopySheetsToRowList(filePaths);
+                            DellMergeModel dmc = new DellMergeModel();
+                            List<List<DellMergeModel>> rowList = dmc.CopySheetsToRowList(filePaths);
 
 
                             if (rowList.Count > 0)
@@ -139,7 +144,7 @@ namespace Anchor
                             List<SapModel> sapList = sm.SapDataTableToList(dt);
 
                             //匯出excel
-                            string message = sm.ListToExcel(sapList, saveFilePath);
+                            message = sm.ListToExcel(sapList, saveFilePath);
 
                             if (message.Equals("OK"))
                                 MessageBox.Show("Done", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -147,7 +152,24 @@ namespace Anchor
                                 MessageBox.Show("Fail!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             break;
+                        #endregion
+
+                        //PO weekly report
+                        #region
+                        case 3:
+                            string filePath = txtPoPath.Text.Trim();
+                            PoModel pm = new PoModel();
+                            message = pm.AnalysisWeeklyReport(filePath, saveFilePath);
+
+                            if (message.Equals("OK"))
+                                MessageBox.Show("Done", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                                MessageBox.Show(message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            break;
                             #endregion
+
+
                     }
                 }
             }
@@ -163,7 +185,7 @@ namespace Anchor
         private void BtnBrowseRMS_Click(object sender, EventArgs e)
         {
 
-            opfd.Filter = "RMS files (*.csv,*.xls)|*.csv;*.xls";
+            opfd.Filter = "RMS files (*.csv,*.xls,*.xlsx)|*.csv;*.xls;*.xlsx";
             opfd.Multiselect = true;
             if (opfd.ShowDialog() == DialogResult.OK)
             {
@@ -208,17 +230,74 @@ namespace Anchor
                 txtSapPath.Text = sFileName;
             }
         }
-
-        private void BtnCancel_Click(object sender, EventArgs e)
+        private void BtnBrowsePo_Click(object sender, EventArgs e)
         {
-            this.Close();
-            //StartProgress();
+            opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
 
-            //SowModel sm = new SowModel();
-            //DataTable dt = sm.WordSowToDataTable(@"D:\Desktop\Jennifer_test\YETI MAY FY23 SOW v0.4.docx");
-            //List<SowModel> list = sm.WrodSowDataTableToList(dt);
-            //sm.ListToExcel(list, @"D:\Desktop\Jennifer_test\xxxxx.xlsx", @"docs\Sample_polling_format.xlsx", "Allocation polling-project", 3);
-            //sm.ExcelToDataTable(@"D:\Desktop\Jennifer_test\merge.xlsx", "Allocation polling-project", 3);
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string sFileName = opfd.FileName;
+                txtPoPath.Text = sFileName;
+            }
+
+        }
+
+        private void BtnBrowseSumTable_Click(object sender, EventArgs e)
+        {
+            opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
+
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string sFileName = opfd.FileName;
+                txtSumTablePath.Text = sFileName;
+            }
+        }
+
+        private void DgvSow_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            gdvSowIndex = e.RowIndex;
+            DataGridViewRow row = dgvSow.Rows[gdvSowIndex];
+            txtCategory.Text = row.Cells[0].Value.ToString();
+            txtDpn.Text = row.Cells[1].Value.ToString();
+            txtDescription.Text = row.Cells[2].Value.ToString();
+            txtManu.Text = row.Cells[3].Value.ToString();
+
+        }
+
+        private void BtnInsert_Click(object sender, EventArgs e)
+        {
+            dt.Rows.Add(txtCategory.Text, txtDpn.Text, txtDescription.Text, txtManu.Text);
+
+        }
+
+        private void BtnUpdat_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow newData = dgvSow.Rows[gdvSowIndex];
+            newData.Cells[0].Value = txtCategory.Text;
+            newData.Cells[1].Value = txtDpn.Text;
+            newData.Cells[2].Value = txtDescription.Text;
+            newData.Cells[3].Value = txtManu.Text;
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            gdvSowIndex = dgvSow.CurrentCell.RowIndex;
+            dgvSow.Rows.RemoveAt(gdvSowIndex);
+        }
+
+        private string GetSaveFilePath()
+        {
+            sfd.Filter = "Excel Files|*.xlsx"; ;//設定檔案型別
+            sfd.FileName = "Inventory_report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss"));//設定預設檔名
+            sfd.DefaultExt = "xlsx";//設定預設格式（可以不設）
+            sfd.AddExtension = true;//設定自動在檔名中新增副檔名
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                return sfd.FileName;
+            }
+            else return "";
         }
 
         private void StartProgress()
@@ -246,17 +325,23 @@ namespace Anchor
             //prgsBar.Visible = false;
             //MessageBox.Show("success!");
         }
-        private string GetSaveFilePath()
+
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
-            sfd.Filter = "Excel Files|*.xlsx"; ;//設定檔案型別
-            sfd.FileName = "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss"));//設定預設檔名
-            sfd.DefaultExt = "xlsx";//設定預設格式（可以不設）
-            sfd.AddExtension = true;//設定自動在檔名中新增副檔名
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                return sfd.FileName;
-            }
-            else return "";
+            //this.Close();
+            //StartProgress();
+
+            //DataTable dt = sm.WordSowToDataTable(@"D:\Desktop\Jennifer_test\YETI MAY FY23 SOW v0.4.docx");
+            //List<SowModel> list = sm.WrodSowDataTableToList(dt);
+            //sm.ListToExcel(list, @"D:\Desktop\Jennifer_test\xxxxx.xlsx", @"docs\Sample_polling_format.xlsx", "Allocation polling-project", 3);
+            //sm.ExcelToDataTable(@"D:\Desktop\Jennifer_test\merge.xlsx", "Allocation polling-project", 3);
+            //sm.DoCopyRange();
+            //sm.DoInsertRow();
+            string str = dateTimePicker.Value.ToString("yyyy/MM/dd 00:00:00");
+            MessageBox.Show(str);
+            if ((DateTime.Parse(str) > DateTime.Parse("2021/8/31  09:51:27 AM")))
+                MessageBox.Show(">");
+            else MessageBox.Show("<");
         }
 
 

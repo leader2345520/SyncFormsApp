@@ -48,6 +48,3 @@ D:\SyncFormsApp\Anchor\obj\Debug\Anchor.application
 D:\SyncFormsApp\Anchor\obj\Debug\Anchor.csproj.CopyComplete
 D:\SyncFormsApp\Anchor\obj\Debug\Anchor.exe
 D:\SyncFormsApp\Anchor\obj\Debug\Anchor.pdb
-D:\SyncFormsApp\Anchor\bin\Debug\Aspose.Words.dll
-D:\SyncFormsApp\Anchor\bin\Debug\Aspose.Words.Pdf2Word.dll
-D:\SyncFormsApp\Anchor\bin\Debug\Aspose.Words.xml

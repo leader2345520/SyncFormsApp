@@ -1,6 +1,4 @@
-﻿using Aspose.Words;
-using Aspose.Words.Tables;
-using NPOI.HSSF.UserModel;
+﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -16,7 +14,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static NPOI.HSSF.Util.HSSFColor;
 using BorderStyle = NPOI.SS.UserModel.BorderStyle;
-using Table = Aspose.Words.Tables.Table;
 
 namespace Anchor
 {
@@ -75,13 +72,14 @@ namespace Anchor
                     {
                         // IRow => cursor
                         IRow curRow = sheet.GetRow(i);
+
                         DataRow dr = dt.NewRow();
 
                         for (int j = 0; j < curRow.LastCellNum; j++)
                         {
 
                             ICell icell = curRow.GetCell(j);
-                            string cellValue = GetValueFromCell(icell);
+                            string cellValue = GetValueFromCell(icell, workbook);
 
 
                             if (isFirst)
@@ -118,6 +116,36 @@ namespace Anchor
         {
             return cellValue + DateTime.Now.ToString(("_HHmmss"));
         }
+        public string GetValueFromCell(ICell icell, IWorkbook workbook)
+        {
+            string output = "";
+
+            XSSFFormulaEvaluator formula = new XSSFFormulaEvaluator(workbook);
+            formula.EvaluateInCell(icell);
+
+            if (icell != null)
+            {
+                switch (icell.CellType)
+                {
+                    case CellType.String:
+                        output = icell.StringCellValue.Trim();
+                        break;
+                    case CellType.Numeric:
+                        if (HSSFDateUtil.IsCellDateFormatted(icell))//日期類型
+                            output = icell.DateCellValue.ToString();
+                        else//其他數字類型
+                            output = icell.NumericCellValue.ToString();
+                        break;
+                    case CellType.Boolean:
+                        output = icell.BooleanCellValue.ToString();
+                        break;
+                    default:
+                        output = "";
+                        break;
+                }
+            }
+            return output;
+        }
         public string GetValueFromCell(ICell icell)
         {
             string output = "";
@@ -140,7 +168,6 @@ namespace Anchor
                 }
             }
             return output;
-            throw new NotImplementedException();
         }
         public string GetMergeColumn(ISheet sheet, int i, int j)
         {
@@ -151,6 +178,22 @@ namespace Anchor
             else
                 return GetValueFromCell(sheet.GetRow(i).GetCell(j));
 
+        }
+        public IWorkbook OpenWorkbook(string path)
+        {
+            IWorkbook workbook;
+            using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                workbook = WorkbookFactory.Create(fileStream);
+            }
+            return workbook;
+        }
+        public void SaveWorkbook(IWorkbook workbook, string path)
+        {
+            using (var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write))
+            {
+                workbook.Write(fileStream);
+            }
         }
     }
 
