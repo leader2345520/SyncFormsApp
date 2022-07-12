@@ -66,12 +66,12 @@ namespace Anchor
                         {
                             if (i < ch.Length - 1 && ch[i] == ch[i + 1] && ch[i] == ',')
                             {
-                                ch[i] = '換';
+                                ch[i] = 'ㄅ';
                             }
 
                         }
 
-                        string charsStr = new string(ch).Replace("換", ", ");
+                        string charsStr = new string(ch).Replace("ㄅ", ", ");
 
                         var result = new List<string>();
                         var filter = @"([^\""\,]*[^\""\,])|[\""]([^\""]*)[\""]";
@@ -108,6 +108,7 @@ namespace Anchor
                         for (int i = 0; i < result.Count; i++)
                         {
                             dr[i] = result[i];
+                            Console.WriteLine(result[1] + "_" + result[i]);
                         }
                         dt.Rows.Add(dr);
                     }
@@ -608,11 +609,14 @@ namespace Anchor
         }
         public Dictionary<string, DellModel> GetDellColorListDict(List<DellModel> dellColorList)
         {
+            string barcode;
             Dictionary<string, DellModel> dict = new Dictionary<string, DellModel>();
             foreach (DellModel dm in dellColorList)
             {
-                Console.WriteLine(dm.SerialNumber_s);
-                dict.Add(dm.Barcode, dm);
+                barcode = string.IsNullOrEmpty(dm.Barcode) ? "RND_" + (Guid.NewGuid().ToString("N")).Substring(8) : dm.Barcode;
+                Console.WriteLine(dm.SerialNumber_s + "_" + barcode);
+
+                dict.Add(barcode, dm);
 
             }
             return dict;
