@@ -44,6 +44,7 @@ namespace Anchor
         public string Barcode { get; set; }
 
         public byte[] Color { get; set; }
+        public string InputtingTime { get; set; }
         #endregion
 
         public DataTable CsvRmsToDataTable(string filename, string seperator)
@@ -65,12 +66,12 @@ namespace Anchor
                         {
                             if (i < ch.Length - 1 && ch[i] == ch[i + 1] && ch[i] == ',')
                             {
-                                ch[i] = '換';
+                                ch[i] = 'ㄅ';
                             }
 
                         }
 
-                        string charsStr = new string(ch).Replace("換", ", ");
+                        string charsStr = new string(ch).Replace("ㄅ", ", ");
 
                         var result = new List<string>();
                         var filter = @"([^\""\,]*[^\""\,])|[\""]([^\""]*)[\""]";
@@ -107,6 +108,7 @@ namespace Anchor
                         for (int i = 0; i < result.Count; i++)
                         {
                             dr[i] = result[i];
+                            Console.WriteLine(result[1] + "_" + result[i]);
                         }
                         dt.Rows.Add(dr);
                     }
@@ -151,7 +153,7 @@ namespace Anchor
                         //PartComment = row["Part Comment"].ToString(),
                         //RecallDate = row["Recall Date"].ToString(),
                         //TDCHWL = row["TDC HWL"].ToString(),
-                        Comment = GetComment(row["Status"].ToString(), "TPE"),
+                        Comment = GetComment(row["Status"].ToString(), "TPE", row["Fixed Location"].ToString()),
                         Barcode = row["Barcode"].ToString(),
 
                         Color = new byte[] { 0, 0, 255 }  //New Data 預設字體顏色藍色
@@ -175,7 +177,7 @@ namespace Anchor
                 {
                     DellModel dm = new DellModel()
                     {//Location_s = row["*Location"].ToString(),
-                        SerialNumber_s = row["Manuf. Shipment S/N"].ToString(),
+                        SerialNumber_s = row["Manuf. S/N"].ToString(),
                         Part_s = row["Customer Part Number"].ToString(),
                         Project_s = row["Purchase Purpose"].ToString(),
                         PartLocation_s = "TDC->FOXCONN TJ->",//GetPartLocation(row["Status"].ToString(), row["Fixed Location"].ToString()),
@@ -183,7 +185,7 @@ namespace Anchor
                         Manufacturer_s = row["Manufacturer"].ToString(),
                         //TestStatus = row["Test Status"].ToString(),
                         //AgilePartType = row["Agile Part Type"].ToString(),
-                        Revision_s = row["HW/SW Version"].ToString(),
+                        Revision_s = GetRevision(row["Other Description"].ToString()),
                         Category_s = GetCategory(row["type 1"].ToString(), row["type 2"].ToString()),
                         //Asset = row["Asset #"].ToString(),
                         //FrozenCost_s = row["*Frozen Cost"].ToString(),
@@ -199,10 +201,11 @@ namespace Anchor
                         //PartComment = row["Part Comment"].ToString(),
                         //RecallDate = row["Recall Date"].ToString(),
                         //TDCHWL = row["TDC HWL"].ToString(),
-                        Comment = GetComment(row["Status"].ToString(), "TJ"),
+                        Comment = GetComment(row["Status"].ToString(), "TJ", row["Fixed Location"].ToString()),
                         Barcode = row["Barcode"].ToString(),
 
-                        Color = new byte[] { 0, 0, 255 }  //New Data 預設字體顏色藍色
+                        Color = new byte[] { 0, 0, 255 },  //New Data 預設字體顏色藍色
+                        InputtingTime = row["Inputting Time"].ToString(), // TJ 要存輸入時間
                     };
                     dellModelList.Add(dm);
                 }
@@ -471,10 +474,7 @@ namespace Anchor
 
                 //寫檔
                 string _saveFilePath = "".Equals(saveFilePath) ? "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx" : saveFilePath;
-                using (FileStream file = new FileStream(_saveFilePath, FileMode.Create))//產生檔案             
-                {
-                    workbook.Write(file);
-                }
+                SaveWorkbook(workbook, _saveFilePath);
             }
 
 
@@ -538,33 +538,50 @@ namespace Anchor
             else
                 return "";
         }
-        public string GetComment(string status, string location)
+        public string GetComment(string status, string location, string fixedLocation)
         {
             status = status.ToLower();
+            fixedLocation = fixedLocation.ToUpper();
             switch (location)
             {
 
                 case "TPE":
-                    if (new string[] { "available", "returned" }.Contains(status))
+                    if ("available".Equals(status))
                         return "Idle";
                     else if ("borrowed".Equals(status))
                         return "In Use";
                     else if ("callback".Equals(status))
                         return "Check Out";
-                    else if (new string[] { "sold", "broken" }.Contains(status))
+                    else if (new string[] { "sold", "broken", "discard", "lost" }.Contains(status))
                         return "FilterOut";
+                    else if ("returned".Equals(status))
+                        if (fixedLocation.Contains("天津"))
+                            return "In Use";
+                        else if (fixedLocation.Contains("鴻佰"))
+                            return "FilterOut";
+                        else
+                            return "Check Out";
                     else
                         return "";
 
                 case "TJ":
-                    if ("available".Equals(status.ToLower()))
+                    if ("available".Equals(status))
                         return "Idle";
-                    else if ("borrowed".Equals(status.ToLower()))
+                    else if ("borrowed".Equals(status))
                         return "In Use";
-                    else if (new string[] { "callback", "returned" }.Contains(status))
+                    else if ("callback".Equals(status))
                         return "Check Out";
-                    else if (new string[] { "sold", "broken" }.Contains(status))
+                    else if (new string[] { "sold", "broken", "discard", "lost" }.Contains(status))
                         return "FilterOut";
+                    else if ("returned".Equals(status))
+                        if (fixedLocation.Contains("TPE") || fixedLocation.Contains("臺北") || fixedLocation.Contains("SRD3"))
+                            return "In Use";
+                        else if (fixedLocation.Contains("EPD1"))
+                            return "FilterOut";
+                        else if (fixedLocation.Contains("DELL"))
+                            return "Check Out";
+                        else
+                            return "";
                     else
                         return "";
 
@@ -572,31 +589,55 @@ namespace Anchor
                     return "";
             }
         }
+        public string GetRevision(string description)
+        {
+            string result = "";
+            if (description != null)
+            {
+                string[] tokens = description.Split('/');
+
+                foreach (string str in tokens)
+                {
+                    if (str.ToUpper().Contains("REV:"))
+                    {
+                        result = str.ToUpper().Replace("REV:", "").Trim();
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
         public Dictionary<string, DellModel> GetDellColorListDict(List<DellModel> dellColorList)
         {
+            string barcode;
             Dictionary<string, DellModel> dict = new Dictionary<string, DellModel>();
             foreach (DellModel dm in dellColorList)
             {
-                Console.WriteLine(dm.SerialNumber_s);
-                dict.Add(dm.Barcode, dm);
+                barcode = string.IsNullOrEmpty(dm.Barcode) ? "RND_" + (Guid.NewGuid().ToString("N")).Substring(8) : dm.Barcode;
+                Console.WriteLine(dm.SerialNumber_s + "_" + barcode);
+
+                dict.Add(barcode, dm);
 
             }
             return dict;
         }
-        public List<DellModel> CreateAndUpdateDellFile(List<DellModel> rmsColorList, List<DellModel> dellColorList)
+        public List<DellModel> CreateAndUpdateDellFile(List<DellModel> rmsColorList, List<DellModel> dellColorList, string tjValidDate)
         {
             Dictionary<string, DellModel> dellDict = GetDellColorListDict(dellColorList);
 
             foreach (DellModel dm in rmsColorList)
             {
-
+                //mapping barcode
                 if (dellDict.ContainsKey(dm.Barcode))
                     dellDict[dm.Barcode].Comment = dm.Comment;
-                else
+
+                // TJ 要大於 valid date 才能新增
+                else if ((dm.Barcode.Contains("TJ") && DateTime.Parse(dm.InputtingTime) > (DateTime.Parse(tjValidDate)))
+                    || !dm.Barcode.Contains("TJ"))
                     dellDict.Add(dm.Barcode, dm);
             }
 
-            return dellDict.Values.ToList(); ;
+            return dellDict.Values.ToList();
         }
         #endregion
     }

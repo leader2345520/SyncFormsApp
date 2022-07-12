@@ -104,10 +104,7 @@ namespace Anchor
 
                 //寫檔
                 string _saveFilePath = "".Equals(saveFilePath) ? "Inventory report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss")) + ".xlsx" : saveFilePath;
-                using (FileStream file = new FileStream(_saveFilePath, FileMode.Create))//產生檔案             
-                {
-                    workbook.Write(file);
-                }
+                SaveWorkbook(workbook, _saveFilePath);
             }
 
 
