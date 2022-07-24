@@ -337,11 +337,11 @@ namespace Anchor
             //sm.ExcelToDataTable(@"D:\Desktop\Jennifer_test\merge.xlsx", "Allocation polling-project", 3);
             //sm.DoCopyRange();
             //sm.DoInsertRow();
-            string str = dateTimePicker.Value.ToString("yyyy/MM/dd 00:00:00");
-            MessageBox.Show(str);
-            if ((DateTime.Parse(str) > DateTime.Parse("2021/8/31  09:51:27 AM")))
-                MessageBox.Show(">");
-            else MessageBox.Show("<");
+            //string str = dateTimePicker.Value.ToString("yyyy/MM/dd 00:00:00");
+            //MessageBox.Show(str);
+            //if ((DateTime.Parse(str) > DateTime.Parse("2021/8/31  09:51:27 AM")))
+            //    MessageBox.Show(">");
+            //else MessageBox.Show("<");
         }
 
 
