@@ -72,9 +72,23 @@ namespace Anchor
             this.label11 = new System.Windows.Forms.Label();
             this.btnBrowsePo = new System.Windows.Forms.Button();
             this.txtPoPath = new System.Windows.Forms.TextBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.label18 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.btnBrowseTwoD = new System.Windows.Forms.Button();
+            this.txtTowDPath = new System.Windows.Forms.TextBox();
             this.btnExe = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.prgsBar = new System.Windows.Forms.ProgressBar();
+            this.label17 = new System.Windows.Forms.Label();
+            this.txtYHeight = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtYWidth = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.txtXHeight = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtXWidth = new System.Windows.Forms.TextBox();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -82,6 +96,8 @@ namespace Anchor
             this.tabPage4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSow)).BeginInit();
             this.tabPage5.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -92,6 +108,7 @@ namespace Anchor
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Controls.Add(this.tabPage4);
             this.tabControl.Controls.Add(this.tabPage5);
+            this.tabControl.Controls.Add(this.tabPage6);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -568,6 +585,87 @@ namespace Anchor
             this.txtPoPath.Size = new System.Drawing.Size(318, 24);
             this.txtPoPath.TabIndex = 12;
             // 
+            // tabPage6
+            // 
+            this.tabPage6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.tabPage6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.tabPage6.Controls.Add(this.label17);
+            this.tabPage6.Controls.Add(this.txtYHeight);
+            this.tabPage6.Controls.Add(this.label16);
+            this.tabPage6.Controls.Add(this.txtYWidth);
+            this.tabPage6.Controls.Add(this.label15);
+            this.tabPage6.Controls.Add(this.txtXHeight);
+            this.tabPage6.Controls.Add(this.label14);
+            this.tabPage6.Controls.Add(this.txtXWidth);
+            this.tabPage6.Controls.Add(this.label18);
+            this.tabPage6.Controls.Add(this.pictureBox1);
+            this.tabPage6.Controls.Add(this.label13);
+            this.tabPage6.Controls.Add(this.btnBrowseTwoD);
+            this.tabPage6.Controls.Add(this.txtTowDPath);
+            this.tabPage6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.tabPage6.Location = new System.Drawing.Point(4, 27);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(833, 468);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "2D to 1D";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.BackColor = System.Drawing.Color.Lime;
+            this.label18.Font = new System.Drawing.Font("微軟正黑體", 10F);
+            this.label18.ForeColor = System.Drawing.Color.Red;
+            this.label18.Location = new System.Drawing.Point(331, 18);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(308, 18);
+            this.label18.TabIndex = 27;
+            this.label18.Text = "*請將要轉譯的二維資料放在 Excel 的第一個頁籤";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::Anchor.Properties.Resources.TwoDParameter;
+            this.pictureBox1.Location = new System.Drawing.Point(153, 167);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(522, 245);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 26;
+            this.pictureBox1.TabStop = false;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(151, 19);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(180, 17);
+            this.label13.TabIndex = 17;
+            this.label13.Text = "Choose 2D report(.xlsx)";
+            this.label13.Click += new System.EventHandler(this.BtnBrowseTwoD_Click);
+            // 
+            // btnBrowseTwoD
+            // 
+            this.btnBrowseTwoD.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(203)))), ((int)(((byte)(82)))));
+            this.btnBrowseTwoD.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowseTwoD.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBrowseTwoD.ForeColor = System.Drawing.Color.Black;
+            this.btnBrowseTwoD.Location = new System.Drawing.Point(584, 44);
+            this.btnBrowseTwoD.Name = "btnBrowseTwoD";
+            this.btnBrowseTwoD.Size = new System.Drawing.Size(91, 25);
+            this.btnBrowseTwoD.TabIndex = 16;
+            this.btnBrowseTwoD.Text = "Browse";
+            this.btnBrowseTwoD.UseVisualStyleBackColor = false;
+            this.btnBrowseTwoD.Click += new System.EventHandler(this.BtnBrowseTwoD_Click);
+            // 
+            // txtTowDPath
+            // 
+            this.txtTowDPath.BackColor = System.Drawing.SystemColors.Window;
+            this.txtTowDPath.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTowDPath.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtTowDPath.Location = new System.Drawing.Point(153, 44);
+            this.txtTowDPath.Name = "txtTowDPath";
+            this.txtTowDPath.Size = new System.Drawing.Size(415, 24);
+            this.txtTowDPath.TabIndex = 15;
+            // 
             // btnExe
             // 
             this.btnExe.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -598,6 +696,86 @@ namespace Anchor
             this.prgsBar.TabIndex = 7;
             this.prgsBar.Visible = false;
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(388, 135);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(77, 17);
+            this.label17.TabIndex = 35;
+            this.label17.Text = "Y Height :";
+            // 
+            // txtYHeight
+            // 
+            this.txtYHeight.BackColor = System.Drawing.SystemColors.Window;
+            this.txtYHeight.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtYHeight.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtYHeight.Location = new System.Drawing.Point(471, 132);
+            this.txtYHeight.Name = "txtYHeight";
+            this.txtYHeight.Size = new System.Drawing.Size(97, 24);
+            this.txtYHeight.TabIndex = 34;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(151, 135);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(71, 17);
+            this.label16.TabIndex = 33;
+            this.label16.Text = "Y Width :";
+            // 
+            // txtYWidth
+            // 
+            this.txtYWidth.BackColor = System.Drawing.SystemColors.Window;
+            this.txtYWidth.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtYWidth.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtYWidth.Location = new System.Drawing.Point(228, 132);
+            this.txtYWidth.Name = "txtYWidth";
+            this.txtYWidth.Size = new System.Drawing.Size(97, 24);
+            this.txtYWidth.TabIndex = 32;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(388, 84);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(77, 17);
+            this.label15.TabIndex = 31;
+            this.label15.Text = "X Height :";
+            // 
+            // txtXHeight
+            // 
+            this.txtXHeight.BackColor = System.Drawing.SystemColors.Window;
+            this.txtXHeight.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtXHeight.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtXHeight.Location = new System.Drawing.Point(471, 81);
+            this.txtXHeight.Name = "txtXHeight";
+            this.txtXHeight.Size = new System.Drawing.Size(97, 24);
+            this.txtXHeight.TabIndex = 30;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(151, 84);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(71, 17);
+            this.label14.TabIndex = 29;
+            this.label14.Text = "X Width :";
+            // 
+            // txtXWidth
+            // 
+            this.txtXWidth.BackColor = System.Drawing.SystemColors.Window;
+            this.txtXWidth.Font = new System.Drawing.Font("Arial Rounded MT Bold", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtXWidth.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtXWidth.Location = new System.Drawing.Point(228, 81);
+            this.txtXWidth.Name = "txtXWidth";
+            this.txtXWidth.Size = new System.Drawing.Size(97, 24);
+            this.txtXWidth.TabIndex = 28;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -625,6 +803,9 @@ namespace Anchor
             ((System.ComponentModel.ISupportInitialize)(this.dgvSow)).EndInit();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -673,6 +854,20 @@ namespace Anchor
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button btnBrowseDell;
         private System.Windows.Forms.TextBox txtDellPath;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button btnBrowseTwoD;
+        private System.Windows.Forms.TextBox txtTowDPath;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox txtYHeight;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox txtYWidth;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox txtXHeight;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox txtXWidth;
     }
 }
 

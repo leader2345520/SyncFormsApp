@@ -38,7 +38,13 @@ namespace Anchor
             string message;
             try
             {
-                string saveFilePath = GetSaveFilePath();
+                //前兩個Dell 相關的 tab 使用 Inventory 開頭的預設檔名
+                string saveFilePath;
+                if (tabControl.SelectedIndex < 2)
+                    saveFilePath = GetSaveFilePath();
+                else saveFilePath = GetSaveFilePathWithOutInventory();
+
+
                 if (!string.IsNullOrEmpty(saveFilePath))
                 {
                     switch (tabControl.SelectedIndex)
@@ -167,8 +173,27 @@ namespace Anchor
                                 MessageBox.Show(message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             break;
-                            #endregion
+                        #endregion
 
+                        //2D report
+                        #region
+                        case 4:
+
+                            TwoDimensionModel tdm = new TwoDimensionModel(
+                                 Int32.Parse(txtXWidth.Text),
+                                 Int32.Parse(txtXHeight.Text),
+                                 Int32.Parse(txtYWidth.Text),
+                                 Int32.Parse(txtYHeight.Text)
+                            );
+                            message = tdm.ConvertTwoDimensionData(txtTowDPath.Text.Trim(), saveFilePath);
+
+                            if (message.Equals("OK"))
+                                MessageBox.Show("Done", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                                MessageBox.Show(message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            break;
+                            #endregion
 
                     }
                 }
@@ -182,6 +207,8 @@ namespace Anchor
 
         }
 
+
+
         private void BtnBrowseRMS_Click(object sender, EventArgs e)
         {
 
@@ -194,7 +221,6 @@ namespace Anchor
             }
 
         }
-
         private void BtnBrowseDell_Click(object sender, EventArgs e)
         {
             opfd.Filter = "Excel Files|*.xlsx";
@@ -205,7 +231,6 @@ namespace Anchor
                 txtDellPath.Text = sFileName;
             }
         }
-
         private void BtnBrowseMultiDell_Click(object sender, EventArgs e)
         {
             opfd.Filter = "Excel Files|*.xlsx";
@@ -218,7 +243,6 @@ namespace Anchor
             }
 
         }
-
         private void BtnBrowseSap_Click(object sender, EventArgs e)
         {
             opfd.Filter = "Excel Files|*.xlsx";
@@ -242,7 +266,18 @@ namespace Anchor
             }
 
         }
+        private void BtnBrowseTwoD_Click(object sender, EventArgs e)
+        {
+            opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
 
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string sFileName = opfd.FileName;
+                txtTowDPath.Text = sFileName;
+            }
+
+        }
         private void BtnBrowseSumTable_Click(object sender, EventArgs e)
         {
             opfd.Filter = "Excel Files|*.xlsx";
@@ -265,13 +300,11 @@ namespace Anchor
             txtManu.Text = row.Cells[3].Value.ToString();
 
         }
-
         private void BtnInsert_Click(object sender, EventArgs e)
         {
             dt.Rows.Add(txtCategory.Text, txtDpn.Text, txtDescription.Text, txtManu.Text);
 
         }
-
         private void BtnUpdat_Click(object sender, EventArgs e)
         {
             DataGridViewRow newData = dgvSow.Rows[gdvSowIndex];
@@ -280,7 +313,6 @@ namespace Anchor
             newData.Cells[2].Value = txtDescription.Text;
             newData.Cells[3].Value = txtManu.Text;
         }
-
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             gdvSowIndex = dgvSow.CurrentCell.RowIndex;
@@ -295,11 +327,30 @@ namespace Anchor
             sfd.AddExtension = true;//設定自動在檔名中新增副檔名
             if (sfd.ShowDialog() == DialogResult.OK)
             {
+                Console.WriteLine(sfd.FileName);
                 return sfd.FileName;
             }
             else return "";
         }
-
+        private string GetSaveFilePathWithOutInventory()
+        {
+            sfd.Filter = "Excel Files|*.xlsx"; ;//設定檔案型別
+            sfd.FileName = "Report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss"));//設定預設檔名
+            sfd.DefaultExt = "xlsx";//設定預設格式（可以不設）
+            sfd.AddExtension = true;//設定自動在檔名中新增副檔名
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                return sfd.FileName;
+            }
+            else return "";
+        }
+        private void NumberTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
         private void StartProgress()
         {
             int fileCount = 15;
@@ -343,7 +394,6 @@ namespace Anchor
             //    MessageBox.Show(">");
             //else MessageBox.Show("<");
         }
-
 
     }
 }
