@@ -62,7 +62,7 @@ namespace Anchor.Model
                         icell = curRow.GetCell(YWidth + i);
                         var cellValue = GetValueFromCell(icell);
 
-                        List<string> resultList = YLists[j].Concat(XLists[i]).ToList<string>();
+                        List<string> resultList = XLists[i].Concat(YLists[j]).ToList<string>();
                         resultList.Add(cellValue);
                         ResultLists.Add(resultList);
                     }
