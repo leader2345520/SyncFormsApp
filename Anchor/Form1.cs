@@ -193,7 +193,24 @@ namespace Anchor
                                 MessageBox.Show(message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             break;
+                        #endregion
+
+                        //1D mapping
+                        #region
+                        case 5:
+                            //Do somthing
+                            OneDimensionMappingModel odm = new OneDimensionMappingModel();
+                            string oldFilePath = txt2DTo1DOldPath.Text.Trim();
+                            string newFilePath = txt2DTo1DNewPath.Text.Trim();
+                            message = odm.MappingOneDimensionData(oldFilePath, newFilePath, saveFilePath);
+
+                            if (message.Equals("OK"))
+                                MessageBox.Show("DONE", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            else
+                                MessageBox.Show(message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
                             #endregion
+
 
                     }
                 }
@@ -395,5 +412,30 @@ namespace Anchor
             //else MessageBox.Show("<");
         }
 
+        private void BtnBrowse2DTo1DOld_Click(object sender, EventArgs e)
+        {
+            opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
+
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string sFileName = opfd.FileName;
+                txt2DTo1DOldPath.Text = sFileName;
+            }
+
+        }
+
+        private void BtnBrowse2DTo1DNew_Click(object sender, EventArgs e)
+        {
+            opfd.Filter = "Excel Files|*.xlsx";
+            opfd.Multiselect = false;
+
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string sFileName = opfd.FileName;
+                txt2DTo1DNewPath.Text = sFileName;
+            }
+
+        }
     }
 }
