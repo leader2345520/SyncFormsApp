@@ -42,7 +42,6 @@ namespace Anchor.Model
 
                         // 取得最後一個欄位位置
                         int oldFileLastCellNum = oldFileWorkbookSheet.GetRow(0).LastCellNum;
-
                         for (int i = 0; i < (oldFileLastRowNum + 1); i++)
                         {
                             List<string> oldFileResultList = new List<string>();
@@ -78,7 +77,6 @@ namespace Anchor.Model
 
                         // 取得最後一個欄位位置
                         int newFileLastCellNum = newFileWorkbookSheet.GetRow(0).LastCellNum;
-
                         for (int i = 0; i < (newFileLastRowNum + 1); i++)
                         {
                             List<string> newFileResultList = new List<string>();
@@ -93,6 +91,7 @@ namespace Anchor.Model
                         }
                     }
                 }
+                Console.WriteLine("NewLists : " + NewLists.Count);
                 #endregion
 
                 ResultLists = MappingToResultList(OldLists, NewLists);
@@ -118,7 +117,7 @@ namespace Anchor.Model
                 List<string> newFileCellList = newFileResultList[i];
                 String newFileKey = "";
                 String newFileValue = "";
-                
+
                 for (int k = 0; k < (newFileCellList.Count - 1); k++)
                 {
                     // 組新資料的Key值
@@ -144,7 +143,7 @@ namespace Anchor.Model
                     }
                     // 取得舊資料的Value值
                     oldFileValue = oldFileCellList[(oldFileCellList.Count - 1)];
-                    
+
                     if (newFileKey.Equals(oldFileKey))
                     {
                         // Key 相同、Value相同，以黑色顯示 表示 未更動
@@ -173,6 +172,7 @@ namespace Anchor.Model
                 }
                 ResultLists.Add(resultList);
             }
+            Console.WriteLine("ResultLists : " + ResultLists.Count);
 
             // 以舊資料為基底，比對新資料有無刪除
             // 舊資料被刪除的筆數
@@ -217,7 +217,15 @@ namespace Anchor.Model
                             deleteCount++;
                             resultList.Add("D"); // D 代表 Delete
                             // 從新資料當前筆數插入被刪除的那一筆資料
-                            ResultLists.Insert((i + deleteCount), resultList);
+                            if ((i + deleteCount) > ResultLists.Count)
+                            {
+                                ResultLists.Add(resultList);
+                            }
+                            else
+                            {
+                                ResultLists.Insert((i + deleteCount), resultList);
+                            }
+
                             break;
                         }
                     }
@@ -292,6 +300,22 @@ namespace Anchor.Model
                 cellStyle_red.SetFont(font_red);
                 #endregion
 
+                #region 紅色模板 + 黃色背景
+                //設定處存格 style(紅色)
+                XSSFCellStyle cellStyle_red_background_yellow = (XSSFCellStyle)workbook.CreateCellStyle();
+                cellStyle_red_background_yellow.BorderBottom = BorderStyle.Thin;
+                cellStyle_red_background_yellow.BorderLeft = BorderStyle.Thin;
+                cellStyle_red_background_yellow.BorderRight = BorderStyle.Thin;
+                cellStyle_red_background_yellow.BorderTop = BorderStyle.Thin;
+                //設定字體sytle
+                XSSFFont font_red_background_yellow = (XSSFFont)workbook.CreateFont();
+                font_red_background_yellow.FontName = "Calibri";//字體
+                font_red_background_yellow.SetColor(new XSSFColor(new byte[] { 255, 0, 0 }));
+                cellStyle_red_background_yellow.SetFont(font_red_background_yellow);
+                cellStyle_red_background_yellow.SetFillForegroundColor(new XSSFColor(new byte[] { 255, 255, 0 }));
+                cellStyle_red_background_yellow.FillPattern = FillPattern.SolidForeground;
+                #endregion
+
                 #region 藍色模板
                 //設定處存格 style(藍色)
                 XSSFCellStyle cellStyle_blue = (XSSFCellStyle)workbook.CreateCellStyle();
@@ -305,6 +329,7 @@ namespace Anchor.Model
                 font_blue.SetColor(new XSSFColor(new byte[] { 0, 0, 255 }));
                 cellStyle_blue.SetFont(font_blue);
                 #endregion
+
 
                 #region 灰色 + 刪除線模板
                 //設定處存格 style(灰色)
@@ -348,12 +373,21 @@ namespace Anchor.Model
                             cell = row.CreateCell(j);
                             cell.SetCellValue(resultLists[i][j]);
                             //逐格設定顏色, CellStyle超過65000個就會爆掉
-                            cell.CellStyle = cellStyle_red;
+                            if (j.Equals(resultLists[i].Count - 2))
+                            {
+                                cell.CellStyle = cellStyle_red_background_yellow;
+                            }
+                            else
+                            {
+                                cell.CellStyle = cellStyle_red;
+                            }
                             cellIndex++;
                         }
                         // A 代表 Add
                         if ("A".Equals(resultLists[i][resultLists[i].Count - 1]))
                         {
+                            string oldStr = resultLists[i - 1][j].Trim();
+                            string newStr = resultLists[i][j].Trim();
                             //放值
                             cell = row.CreateCell(j);
                             cell.SetCellValue(resultLists[i][j]);
