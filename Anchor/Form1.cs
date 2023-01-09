@@ -53,38 +53,27 @@ namespace Anchor
                         #region
                         case 0:
                             DellModel dm = new DellModel();
-                            List<string> csvRmsPathList = new List<string>();
-                            List<string> xlsRmsPathList = new List<string>();
+                            List<string> newRmsPathList = new List<string>();
                             List<DellModel> rmsList = new List<DellModel>();
                             string[] tokens = txtRmsPath.Text.Split(';');
                             string tjValidDate = dateTimePicker.Value.ToString("yyyy/MM/dd 00:00:00");
 
                             foreach (string fp in tokens)
                             {
-                                if (fp.Contains(".csv"))
-                                    csvRmsPathList.Add(fp);
-                                else if (fp.Contains(".xls"))
-                                    xlsRmsPathList.Add(fp);
+                               if (fp.Contains(".xlsx"))
+                                    newRmsPathList.Add(fp);
                             }
 
 
-                            if (csvRmsPathList != null)
+                            if (newRmsPathList != null)
                             {
-                                foreach (string crp in csvRmsPathList)
+                                foreach (string nrpl in newRmsPathList)
                                 {
-                                    DataTable csvRmsDt = dm.CsvRmsToDataTable(crp.Trim(), ",");
-                                    rmsList.AddRange(dm.CsvRmsDataTableToList(csvRmsDt));
+                                    DataTable newRmsDt = dm.ExcelToDataTable(nrpl.Trim(), 0, 1);
+                                    rmsList.AddRange(dm.NewRmsDataTableToList(newRmsDt));
                                 }
                             }
 
-                            if (xlsRmsPathList != null)
-                            {
-                                foreach (string xrp in xlsRmsPathList)
-                                {
-                                    DataTable xlsRmsDt = dm.ExcelToDataTable(xrp.Trim(), 0, 1);
-                                    rmsList.AddRange(dm.XlsRmsDataTableToList(xlsRmsDt));
-                                }
-                            }
 
                             List<DellModel> rmsColorList = dm.RMSListInputColor(rmsList);
 
@@ -96,7 +85,7 @@ namespace Anchor
                                 List<DellModel> dellList = dm.DellDataTableToList(dellDt);
                                 dellColorList = dm.DellListInputColor(dellList);
 
-                                //合併rms .csv & dell .xlsx
+                                //合併rms & dell .xlsx
                                 rmsColorList = dm.CreateAndUpdateDellFile(rmsColorList, dellColorList, tjValidDate);
                                 //rmsColorList.AddRange(dellColorList);
                             }
@@ -229,7 +218,7 @@ namespace Anchor
         private void BtnBrowseRMS_Click(object sender, EventArgs e)
         {
 
-            opfd.Filter = "RMS files (*.csv,*.xls,*.xlsx)|*.csv;*.xls;*.xlsx";
+            opfd.Filter = "RMS files (*.xlsx)|*.xlsx";
             opfd.Multiselect = true;
             if (opfd.ShowDialog() == DialogResult.OK)
             {

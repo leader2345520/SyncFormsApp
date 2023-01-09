@@ -47,77 +47,7 @@ namespace Anchor
         public string InputtingTime { get; set; }
         #endregion
 
-        public DataTable CsvRmsToDataTable(string filename, string seperator)
-        {
-            DataTable dt = new DataTable();
-            bool isFirst = true;
-            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                using (StreamReader sr = new StreamReader(fs, Encoding.Default))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        var eachLineStr = sr.ReadLine();
-
-                        string[] rows = eachLineStr.Split(new string[] { seperator }, StringSplitOptions.None);
-
-                        char[] ch = eachLineStr.ToCharArray();
-                        for (int i = 0; i < ch.Length; i++)
-                        {
-                            if (i < ch.Length - 1 && ch[i] == ch[i + 1] && ch[i] == ',')
-                            {
-                                ch[i] = 'ㄅ';
-                            }
-
-                        }
-
-                        string charsStr = new string(ch).Replace("ㄅ", ", ");
-
-                        var result = new List<string>();
-                        var filter = @"([^\""\,]*[^\""\,])|[\""]([^\""]*)[\""]";
-                        Match match = Regex.Match(charsStr, filter, RegexOptions.IgnoreCase);
-
-                        while (match.Success)
-                        {
-                            if (!string.IsNullOrEmpty(match.Groups[2].Value))
-                            {
-                                result.Add(match.Groups[2].Value);
-                            }
-                            else
-                            {
-                                if (result.Contains(match.Value) && isFirst)
-                                    result.Add(match.Value + "1");
-                                else
-                                    result.Add(match.Value);
-                            }
-                            match = match.NextMatch();
-                        }
-
-                        //exclude first line
-                        if (isFirst)
-                        {
-                            for (int i = 0; i < result.Count; i++)
-                            {
-                                dt.Columns.Add(result[i]);
-                            }
-                            isFirst = false;
-                            continue;
-                        }
-                        //split string to array of string use seperator
-                        DataRow dr = dt.NewRow();
-                        for (int i = 0; i < result.Count; i++)
-                        {
-                            dr[i] = result[i];
-                            Console.WriteLine(result[1] + "_" + result[i]);
-                        }
-                        dt.Rows.Add(dr);
-                    }
-                }
-            }
-
-            return dt;
-        }
-        public List<DellModel> CsvRmsDataTableToList(DataTable dt)
+        public List<DellModel> NewRmsDataTableToList(DataTable dt)
         {
 
             List<DellModel> dellModelList = new List<DellModel>();
@@ -129,19 +59,19 @@ namespace Anchor
                     DellModel dm = new DellModel()
                     {
                         //Location_s = row["*Location"].ToString(),
-                        SerialNumber_s = row["Manuf. Shipment S/N"].ToString(),
-                        Part_s = string.IsNullOrEmpty(row["Cust. PN"].ToString()) || row["Cust. PN"].ToString().Split(':').Length < 2 ? row["Cust. PN"].ToString() : row["Cust. PN"].ToString().Split(':')[1].Trim(),
-                        Project_s = row["Purchase Pur."].ToString(),
-                        PartLocation_s = GetPartLocation(row["Status"].ToString(), row["Fixed Location"].ToString()),
-                        UserDefinedDescription_s = row["Description"].ToString(),
-                        Manufacturer_s = row["Manufacturer"].ToString(),
+                        SerialNumber_s = row["來料SN"].ToString(),
+                        Part_s = string.IsNullOrEmpty(row["客戶料號"].ToString()) || row["客戶料號"].ToString().Split(':').Length < 2 ? row["客戶料號"].ToString() : row["客戶料號"].ToString().Split(':')[1].Trim(),
+                        Project_s = row["專案"].ToString(),
+                        PartLocation_s = GetPartLocation(row["物流狀態"].ToString(), row["條碼號"].ToString()),
+                        UserDefinedDescription_s = row["物料描述"].ToString(),
+                        Manufacturer_s = row["製造商"].ToString(),
                         //TestStatus = row["Test Status"].ToString(),
                         //AgilePartType = row["Agile Part Type"].ToString(),
-                        Revision_s = row["HW/SW Version"].ToString(),
-                        Category_s = GetCategory(row["type1"].ToString(), row["type2"].ToString()),
+                        Revision_s = row["製造商版次"].ToString(),
+                        Category_s = GetCategory(row["物料大類"].ToString()),
                         //Asset = row["Asset #"].ToString(),
                         //FrozenCost_s = row["*Frozen Cost"].ToString(),
-                        UserDefinedOriginalCost_s = row["Price"].ToString(),
+                        UserDefinedOriginalCost_s = row["價格"].ToString(),
                         //CountryofOrigin_s = row["*Country of Origin"].ToString(),
                         //ManufacturerPartNumber = row["Manufacturer Part Number"].ToString(),
                         //AllocatedBorrower = row["Allocated Borrower"].ToString(),
@@ -153,8 +83,8 @@ namespace Anchor
                         //PartComment = row["Part Comment"].ToString(),
                         //RecallDate = row["Recall Date"].ToString(),
                         //TDCHWL = row["TDC HWL"].ToString(),
-                        Comment = GetComment(row["Status"].ToString(), "TPE", row["Fixed Location"].ToString()),
-                        Barcode = row["Barcode"].ToString(),
+                        Comment = GetComment(row["物流狀態"].ToString()),
+                        Barcode = row["條碼號"].ToString(),
 
                         Color = new byte[] { 0, 0, 255 }  //New Data 預設字體顏色藍色
                     };
@@ -166,7 +96,7 @@ namespace Anchor
 
             return dellModelList;
         }
-        public List<DellModel> XlsRmsDataTableToList(DataTable dt)
+        public List<DellModel> NewRmsToDataTable(DataTable dt)
         {
 
             List<DellModel> dellModelList = new List<DellModel>();
@@ -186,7 +116,7 @@ namespace Anchor
                         //TestStatus = row["Test Status"].ToString(),
                         //AgilePartType = row["Agile Part Type"].ToString(),
                         Revision_s = GetRevision(row["Other Description"].ToString()),
-                        Category_s = GetCategory(row["type 1"].ToString(), row["type 2"].ToString()),
+                        Category_s = GetCategory(row["type 1"].ToString()),
                         //Asset = row["Asset #"].ToString(),
                         //FrozenCost_s = row["*Frozen Cost"].ToString(),
                         UserDefinedOriginalCost_s = row["Price"].ToString(),
@@ -201,7 +131,7 @@ namespace Anchor
                         //PartComment = row["Part Comment"].ToString(),
                         //RecallDate = row["Recall Date"].ToString(),
                         //TDCHWL = row["TDC HWL"].ToString(),
-                        Comment = GetComment(row["Status"].ToString(), "TJ", row["Fixed Location"].ToString()),
+                        Comment = GetComment(row["Status"].ToString()),
                         Barcode = row["Barcode"].ToString(),
 
                         Color = new byte[] { 0, 0, 255 },  //New Data 預設字體顏色藍色
@@ -482,113 +412,80 @@ namespace Anchor
         }
 
         #region common function
-        public string GetCategory(string type1, string type2)
+        public string GetCategory(string type1)
         {
             switch (type1)
             {
                 case "CPU":
                     return "PROCESSOR";
-                case "MEMORY":
-                    return "DIMM";
+                case "GPU":
+                    return "GRAPHICS CARD";
                 case "HDD":
                     return "HARD DRIVE";
-                case "Storage":
-                    return "SYSTEM - SYSTEM";
-                case "Power":
+                case "SSD":
+                    return "HARD DRIVE";
+                case "MEMORY":
+                    return "DIMM";
+                case "HBA_RAID":
+                    return "ASSY,CARD,INTERPOSER";
+                case "NIC CARD":
+                    return "ASSY,CARD,INTERPOSER";
+                case "PSU":
                     return "POWER SUPPLY";
-
-                case "Add on card":
-                    if ("Riser card".Equals(type2))
-                        return "CARD,MEMORY RISER";
-                    else if ("graphics card".Equals(type2))
-                        return "GRAPHICS CARD";
-                    else
-                        return "ASSY,CARD,INTERPOSER";
-                case "Assembly":
-                    return "ASSY,PWA";
-                case "Other":
-                    return "ASSY,PWA";
-                case "Fixed Asset":
+                case "Fixed_Asset":
                     return "SYSTEM - SYSTEM";
-                case "Board":
-                    if ("Back Plane".Equals(type2))
-                        return "ASSY,PANEL";
-                    else if ("M/B".Equals(type2))
-                        return "PWA - MOTHERBOARD";
-                    else
-                        return "";
-                case "Surveillance Product":
+                case "Server":
                     return "SYSTEM - SYSTEM";
                 default:
                     return "";
             }
 
         }
-        public string GetPartLocation(string status, string fixedLocation)
+        public string GetPartLocation(string status, string barcode)
         {
-            if (new string[] { "available", "borrowed" }.Contains(status))
-                return "TDC->FOXCONN TPE->";
-            else if ("returned".Equals(status))
-            {
-                if (fixedLocation.Contains("轉天津"))
+            //TD,SN --> TPE
+            //TJ --> TJ
+            // status 如果是 return location 就互換
+            if (new string[] { "良品入库", "借出" }.Contains(status))
+                if (barcode.Contains("TD") || barcode.Contains("SN"))
+                    return "TDC->FOXCONN TPE->";
+                else if (barcode.Contains("TJ"))
                     return "TDC->FOXCONN TJ->";
-                else
-                    return "";
+                else return "";
+            else if ("轉出".Equals(status))
+            {
+                if (barcode.Contains("TD") || barcode.Contains("SN"))
+                    return "TDC->FOXCONN TJ->";
+                else if (barcode.Contains("TJ"))
+                    return "TDC->FOXCONN TPE->";
+                else return "";
             }
             else
                 return "";
         }
-        public string GetComment(string status, string location, string fixedLocation)
+        public string GetComment(string status)
         {
-            status = status.ToLower();
-            fixedLocation = fixedLocation.ToUpper();
-            switch (location)
-            {
 
-                case "TPE":
-                    if ("available".Equals(status))
-                        return "Idle";
-                    else if ("borrowed".Equals(status))
-                        return "In Use";
-                    else if ("callback".Equals(status))
-                        return "Check Out";
-                    else if (new string[] { "sold", "broken", "discard", "lost" }.Contains(status))
-                        return "FilterOut";
-                    else if ("returned".Equals(status))
-                        if (fixedLocation.Contains("天津"))
-                            return "In Use";
-                        else if (fixedLocation.Contains("鴻佰"))
-                            return "FilterOut";
-                        else
-                            return "Check Out";
-                    else
-                        return "";
+            if ("良品入库".Equals(status))
+                return "Idle";
+            else if ("借出".Equals(status))
+                return "In Use";
+            else if ("Call Back".Equals(status))
+                return "Check Out";
+            else if (new string[] { "待報廢", "遺失" }.Contains(status))
+                return "FilterOut";
+            else if ("轉出".Equals(status))
+                //if (fixedLocation.Contains("天津"))
+                return "In Use";
+            //else if (fixedLocation.Contains("鴻佰"))
+            //    return "FilterOut";
+            //else
+            //    return "Check Out";
+            else
+                return "";
 
-                case "TJ":
-                    if ("available".Equals(status))
-                        return "Idle";
-                    else if ("borrowed".Equals(status))
-                        return "In Use";
-                    else if ("callback".Equals(status))
-                        return "Check Out";
-                    else if (new string[] { "sold", "broken", "discard", "lost" }.Contains(status))
-                        return "FilterOut";
-                    else if ("returned".Equals(status))
-                        if (fixedLocation.Contains("TPE") || fixedLocation.Contains("臺北") || fixedLocation.Contains("SRD3"))
-                            return "In Use";
-                        else if (fixedLocation.Contains("EPD1"))
-                            return "FilterOut";
-                        else if (fixedLocation.Contains("DELL"))
-                            return "Check Out";
-                        else
-                            return "";
-                    else
-                        return "";
-
-                default:
-                    return "";
-            }
         }
+
         public string GetRevision(string description)
         {
             string result = "";
