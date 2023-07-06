@@ -86,7 +86,8 @@ namespace Anchor
                         Comment = GetComment(row["物流狀態"].ToString()),
                         Barcode = row["條碼號"].ToString(),
 
-                        Color = new byte[] { 0, 0, 255 }  //New Data 預設字體顏色藍色
+                        Color = new byte[] { 0, 0, 255 }, //New Data 預設字體顏色藍色
+                        InputtingTime = row["入庫時間"].ToString() // TJ 要存輸入時間
                     };
                     dellModelList.Add(dm);
                 }
@@ -428,7 +429,7 @@ namespace Anchor
                     return "DIMM";
                 case "HBA_RAID":
                     return "ASSY,CARD,INTERPOSER";
-                case "NIC CARD":
+                case "NIC_CARD":
                     return "ASSY,CARD,INTERPOSER";
                 case "PSU":
                     return "POWER SUPPLY";
@@ -508,14 +509,18 @@ namespace Anchor
         {
             string barcode;
             Dictionary<string, DellModel> dict = new Dictionary<string, DellModel>();
+
             foreach (DellModel dm in dellColorList)
             {
+
                 barcode = string.IsNullOrEmpty(dm.Barcode) ? "RND_" + (Guid.NewGuid().ToString("N")).Substring(8) : dm.Barcode;
-                Console.WriteLine(dm.SerialNumber_s + "_" + barcode);
+                //Console.WriteLine(dm.SerialNumber_s + "_" + barcode);
 
                 dict.Add(barcode, dm);
 
+
             }
+
             return dict;
         }
         public List<DellModel> CreateAndUpdateDellFile(List<DellModel> rmsColorList, List<DellModel> dellColorList, string tjValidDate)
@@ -524,6 +529,7 @@ namespace Anchor
 
             foreach (DellModel dm in rmsColorList)
             {
+                Console.WriteLine(dm.Barcode);
                 //mapping barcode
                 if (dellDict.ContainsKey(dm.Barcode))
                     dellDict[dm.Barcode].Comment = dm.Comment;
