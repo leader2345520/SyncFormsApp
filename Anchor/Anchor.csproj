@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Model\EpoModel.cs" />
     <Compile Include="Model\OneDimensionMappingModel.cs" />
+    <Compile Include="Model\RmsModel.cs" />
     <Compile Include="Model\SapModel.cs" />
     <Compile Include="Model\DellMergeModel.cs" />
     <Compile Include="Model\DellModel.cs" />

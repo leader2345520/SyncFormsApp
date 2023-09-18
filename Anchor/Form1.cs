@@ -42,8 +42,9 @@ namespace Anchor
                 string saveFilePath;
                 if (tabControl.SelectedIndex < 2)
                     saveFilePath = GetSaveFilePath();
+                else if (tabControl.SelectedIndex == 6)
+                    saveFilePath = GetSaveFilePathForDellRandomCheck();
                 else saveFilePath = GetSaveFilePathWithOutInventory();
-
 
                 if (!string.IsNullOrEmpty(saveFilePath))
                 {
@@ -198,8 +199,59 @@ namespace Anchor
                             else
                                 MessageBox.Show(message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             break;
-                            #endregion
+                        #endregion
 
+                        //RMS to Dell ( New )
+                        #region
+                        case 6:
+
+                            RmsModel rm = new RmsModel();
+                            newRmsPathList = new List<string>();
+                            List<RmsModel> newRmsList = new List<RmsModel>();
+                            tokens = txtRmsPathNew.Text.Split(';');
+
+                            foreach (string fp in tokens)
+                            {
+                                if (fp.Contains(".xlsx"))
+                                    newRmsPathList.Add(fp);
+                            }
+
+                            if (newRmsPathList != null)
+                            {
+                                foreach (string nrpl in newRmsPathList)
+                                {
+                                    label21.Text = "STEP 1. 正在載入資料 : " + nrpl;
+                                    label21.Refresh();
+                                    DataTable newRmsDt = rm.ExcelToDataTable(nrpl.Trim(), 0, 1);
+                                    newRmsList.AddRange(rm.RmsDataTableToModelList(newRmsDt));
+                                }
+                            }
+
+
+                            label21.Text = "STEP 2. 過濾所需資料 ( 從 " + newRmsList.Count + " 列資料過濾 )";
+                            label21.Refresh();
+                            dic = rm.PorjectFilter(newRmsList);
+
+                            if (!"OK".Equals(dic["msg"]))
+                                MessageBox.Show("Filter Fail!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            else
+                            {
+                                List<RmsModel> finalList = (List<RmsModel>)dic["returnObject"];
+                                label21.Text = "STEP 3. 匯出指定格式 ( 匯出 " + finalList.Count + " 列資料)";
+                                label21.Refresh();
+                                //匯出excel
+                                string msg = rm.ColorListToExcel(finalList, saveFilePath);
+
+                                if ("OK".Equals(msg))
+                                    MessageBox.Show("OOOK!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                else
+                                    MessageBox.Show("FFFFail!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
+                            label21.Text = "STEP 4. 執行結束";
+                            break;
+
+                            #endregion
 
                     }
                 }
@@ -213,7 +265,18 @@ namespace Anchor
 
         }
 
+        private void BtnBrowseRMSNew_Click(object sender, EventArgs e)
+        {
 
+            opfd.Filter = "RMS files (*.xlsx)|*.xlsx";
+            opfd.Multiselect = true;
+            if (opfd.ShowDialog() == DialogResult.OK)
+            {
+                string[] sFileName = opfd.FileNames;
+                txtRmsPathNew.Text = string.Join(";", sFileName);
+            }
+
+        }
 
         private void BtnBrowseRMS_Click(object sender, EventArgs e)
         {
@@ -342,6 +405,18 @@ namespace Anchor
         {
             sfd.Filter = "Excel Files|*.xlsx"; ;//設定檔案型別
             sfd.FileName = "Report_" + DateTime.Now.ToString(("yyyyMMdd_HHmmss"));//設定預設檔名
+            sfd.DefaultExt = "xlsx";//設定預設格式（可以不設）
+            sfd.AddExtension = true;//設定自動在檔名中新增副檔名
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                return sfd.FileName;
+            }
+            else return "";
+        }
+        private string GetSaveFilePathForDellRandomCheck()
+        {
+            sfd.Filter = "Excel Files|*.xlsx"; ;//設定檔案型別
+            sfd.FileName = "Foxconn_external_audit_report_for_" + DateTime.Now.ToString(("yyyy.MM"));//設定預設檔名
             sfd.DefaultExt = "xlsx";//設定預設格式（可以不設）
             sfd.AddExtension = true;//設定自動在檔名中新增副檔名
             if (sfd.ShowDialog() == DialogResult.OK)
