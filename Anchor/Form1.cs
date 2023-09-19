@@ -416,7 +416,7 @@ namespace Anchor
         private string GetSaveFilePathForDellRandomCheck()
         {
             sfd.Filter = "Excel Files|*.xlsx"; ;//設定檔案型別
-            sfd.FileName = "Foxconn_external_audit_report_for_" + DateTime.Now.ToString(("yyyy.MM"));//設定預設檔名
+            sfd.FileName = "Foxconn external audit report for " + DateTime.Now.ToString(("yyyy.MM"));//設定預設檔名
             sfd.DefaultExt = "xlsx";//設定預設格式（可以不設）
             sfd.AddExtension = true;//設定自動在檔名中新增副檔名
             if (sfd.ShowDialog() == DialogResult.OK)

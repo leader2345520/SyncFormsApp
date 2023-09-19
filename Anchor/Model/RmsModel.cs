@@ -40,7 +40,7 @@ namespace Anchor
                 {
                     RmsModel dm = new RmsModel()
                     {
-                        DPN = row["客戶料號"].ToString(),
+                        DPN = row["客戶料號"].ToString().Replace("DELL:", "").Replace("DELL;", "").Trim(),
                         Barcode = row["條碼號"].ToString(),
                         VendorSN = row["來料SN"].ToString(),
                         Project = row["專案"].ToString(),
@@ -141,6 +141,7 @@ namespace Anchor
                         var val = p.GetValue(rm) == null ? "" : p.GetValue(rm).ToString();
                         cell.SetCellValue(val);
                         cell.CellStyle = cellStyle_blue;
+                        cell.SetCellType(CellType.String);
 
                         cellIndex++;
                     }
