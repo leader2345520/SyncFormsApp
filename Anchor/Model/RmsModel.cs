@@ -40,7 +40,12 @@ namespace Anchor
                 {
                     RmsModel dm = new RmsModel()
                     {
-                        DPN = row["客戶料號"].ToString().Replace("DELL:", "").Replace("DELL;", "").Trim(),
+                        DPN = row["客戶料號"].ToString()
+                        .Replace("DELL:", "")
+                        .Replace("DELL;", "")
+                        .Replace("Dell:", "")
+                        .Replace("Dell;", "")
+                        .Trim(),
                         Barcode = row["條碼號"].ToString(),
                         VendorSN = row["來料SN"].ToString(),
                         Project = row["專案"].ToString(),
@@ -209,100 +214,152 @@ namespace Anchor
                 // Processor / DIMM / Hard Drive
 
                 // sort by category ( 排序的時候 category 已經被分類過一輪了 ， 所以這裡直接跑 sort 沒問題. )
-                // 但是 Module 要在 Memory 上 所以需要客製化 compare 方法.
-                modelList.Sort((x, y) =>
-                    CustomCompare(x.Category, y.Category)
-                ); //升冪:a,b,c
+                modelList.Sort((x, y) => {
+                    int result = x.Project.CompareTo(y.Project);
+                    return result != 0 ? result : CustomCompare(x.Category, y.Category);
+                }); //升冪:a,b,c
 
-                // 找到四大類的最後一筆 index.  ( 找到 Module 代表上一筆是 CPU ... 以此類推.
-                int[] categoryCount = {0, 0, 0 };
+                // 找到各大類有幾筆 index.  ( 並依照所需排序 Processor > DIMM > Hard Drive )
+                Dictionary<string, List<int>> projectAndCategoryMap = new Dictionary<string, List<int>>();
                 for (int i = 0; i < modelList.Count; i++)
                 {
+                    if (! projectAndCategoryMap.ContainsKey(modelList[i].Project))
+                    {
+                        List<int> initList = new List<int>();
+                        initList.Add(-1); // Processor index start in this Project
+                        initList.Add(0); // Processor index end in this Project
+                        initList.Add(-1); // DIMM index start in this Project
+                        initList.Add(0); // DIMM index end in this Project
+                        initList.Add(-1); // Hard Drive index start in this Project
+                        initList.Add(0); // Hard Drive index end in this Project
+                        projectAndCategoryMap.Add(modelList[i].Project, initList);
+                    }
+                    List<int> list = projectAndCategoryMap[modelList[i].Project];
+
                     if (modelList[i].Category.Equals("Processor"))
                     {
-                        categoryCount[0]++;
+                        if (list[0] == -1) {
+                            list[0] = i;
+                        }
+                        list[1]++;
                     }
                     else if (modelList[i].Category.Equals("DIMM"))
                     {
-                        categoryCount[1]++;
+                        if (list[2] == -1)
+                        {
+                            list[2] = i;
+                        }
+                        list[3]++;
                     }
                     else if (modelList[i].Category.Equals("Hard Drive"))
                     {
-                        categoryCount[2]++;
+                        if (list[4] == -1)
+                        {
+                            list[4] = i;
+                        }
+                        list[5]++;
                     }
                 }
 
-                // max 8 8 9
-                int[] pickList = { 0, 0, 0 };
+                // 計算每個 project 理論上要被抽幾筆.
                 int need = 25;
-                bool[] flag = { false, false, false }; 
+                int averagePick = need / projectAndCategoryMap.Count;
 
-                for (int i = 0; i < need; i++)
+                HashSet<int> numbers = new HashSet<int>();
+
+                // 平均要抽的筆數，再平均分配到三大類
+                foreach (KeyValuePair<string, List<int>> entry in projectAndCategoryMap)
                 {
-                    // 無法滿足此條件就 break;
-                    if (flag[0] && flag[1] && flag[2] ) {
-                        break;
+                    List<int> list = entry.Value;
+                    if (list[0] == -1) list[0] = 0;
+                    if (list[2] == -1) list[2] = 0;
+                    if (list[4] == -1) list[4] = 0;
+                    // do something with entry.Value or entry.Key
+                    int[] pickNum = { 0, 0, 0 };
+                    bool[] pickBoo = { false, false, false };
+
+                    int everyCategory = averagePick / 3;
+
+                    if (everyCategory > 0) {
+
+                        while (pickNum[0] < everyCategory && list[0] + list[1] >= everyCategory) {
+                            numbers.Add(RandomGen.Next(list[0], list[0] + list[1]));
+                            pickNum[0]++;
+                        }
+                        while (pickNum[1] < everyCategory && list[2] + list[3] >= everyCategory)
+                        {
+                            numbers.Add(RandomGen.Next(list[2], list[2] + list[3]));
+                            pickNum[1]++;
+                        }
+                        while (pickNum[2] < everyCategory && list[4] + list[5] >= everyCategory)
+                        {
+                            numbers.Add(RandomGen.Next(list[4], list[4] + list[5]));
+                            pickNum[2]++;
+                        }
                     }
 
-                    int randomValueBetween0And99 = RandomGen.Next(100);
-                    if (randomValueBetween0And99 < 33)
-                    {
-                        if (pickList[0] + 1 <= categoryCount[0] && pickList[0] + 1 <= 8)
-                        {
-                            pickList[0] = pickList[0] + 1;
-                        }
-                        else
-                        {
-                            i--;
-                            flag[0] = true;
-                        }
-                    }
-                    else if (randomValueBetween0And99 < 67)
-                    {
-                        if (pickList[1] + 1 <= categoryCount[1] && pickList[1] + 1 <= 8 )
-                        {
-                            pickList[1] = pickList[1] + 1;
-                        }
-                        else
-                        {
-                            i--;
-                            flag[1] = true;
-                        }
-                    }
-                    else
-                    {
+                    int left = averagePick % 3;
+                    while (left != 0 ) {
 
-                        if (pickList[2] + 1 <= categoryCount[2] && pickList[2] + 1 <= 9)
+                        int randomCategory = RandomGen.Next(0, 3);
+
+                        switch (randomCategory)
                         {
-                            pickList[2] = pickList[2] + 1;
+                            case 0:
+                                if (list[0] + list[1] > pickNum[0])
+                                {
+                                    numbers.Add(RandomGen.Next(list[0], list[0] + list[1]));
+                                    left--;
+                                }
+                                else {
+                                    pickBoo[0] = true;
+                                }
+                                break;
+                            case 1:
+                                if (list[2] + list[3] > pickNum[1])
+                                {
+                                    numbers.Add(RandomGen.Next(list[2], list[2] + list[3]));
+                                    left--;
+                                }
+                                else
+                                {
+                                    pickBoo[1] = true;
+                                }
+                                break;
+                            case 2:
+                                if (list[4] + list[5] > pickNum[2])
+                                {
+                                    numbers.Add(RandomGen.Next(list[4], list[4] + list[5]));
+                                    left--;
+                                }
+                                else
+                                {
+                                    pickBoo[2] = true;
+                                }
+                                break;
                         }
-                        else
+
+                        if (pickBoo[0] && pickBoo[1] && pickBoo[2])
                         {
-                            i--;
-                            flag[2] = true;
+                            break;
                         }
                     }
-                    
+                }
+                // 如果能25個，就補到 25 個
+                while (numbers.Count < 25 && modelList.Count >= 25) {
+                    numbers.Add(RandomGen.Next(0, modelList.Count));
                 }
 
                 List<RmsModel> finalList = new List<RmsModel>();
-                int alreadyUse = 0;
-                for (int i = 0; i < pickList.Length; i++) {
-
-                    int shouldPick = pickList[i];
-
-                    HashSet<int> numbers = new HashSet<int>();
-                    while (numbers.Count < shouldPick)
-                    {
-                        numbers.Add(RandomGen.Next(alreadyUse, alreadyUse + categoryCount[i]));
-                    }
-                    alreadyUse += categoryCount[i];
-
-                    foreach (int item in numbers)
-                    {
-                        finalList.Add(modelList[item]);
-                    }
+                foreach (int item in numbers)
+                {
+                    finalList.Add(modelList[item]);
                 }
+
+                finalList.Sort((x, y) =>
+                    CustomCompare(x.Category, y.Category)
+                ); //升冪:a,b,c
+
 
                 return new Dictionary<string, object> { { "msg", "OK" }, { "returnObject", finalList } };
             }
